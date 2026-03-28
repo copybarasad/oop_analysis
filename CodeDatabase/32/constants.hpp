@@ -1,0 +1,102 @@
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
+
+#define PLAYER_HEALTH 100
+#define PLAYER_DAMAGE 20
+#define FIELD_WIDTH 15
+#define FIELD_HEIGHT 15
+
+#define ENEMY_GOBLIN_HP 40
+#define ENEMY_GOBLIN_DMG 8
+
+#define BUILDING_SPAWN_DELAY 5
+#define POTION_MIN_COUNT 3
+#define POTION_COUNT_VARIATION 3
+#define POTION_TYPE_COUNT 2
+
+#define MAX_DISTANCE 999
+#define STEP 1
+#define STEP_BACK -1
+#define FIELD_MIN 0
+
+#define AREA_SIZE 2
+#define FIELD_MIN 0
+#define OFFSET 1
+#define DIR_UP 'w'
+#define DIR_DOWN 's'
+#define DIR_LEFT 'a'
+#define DIR_RIGHT 'd'
+
+#define BUILDING_HEALTH 80
+#define MINION_HEALTH 25
+#define MINION_DAMAGE 5
+#define DIRECTIONS_COUNT 8
+#define FIELD_MIN 0
+
+#define START_POSITION 0
+#define MIN_HEALTH 0
+
+#define FIELD_MIN_SIZE 10
+#define FIELD_MAX_SIZE 25
+#define WALL_PERCENTAGE_DIVISOR 10
+#define SLOW_PERCENTAGE_DIVISOR 10
+#define FIELD_MIN 0
+
+#define RANGE_ATTACK_DISTANCE 2
+#define MELEE_ATTACK_DISTANCE 1
+#define STEP_UP 'W'
+#define STEP_DOWN 'S'
+#define STEP_LEFT 'A'
+#define STEP_RIGHT 'D'
+#define ACTION_INVENTORY 'I'
+#define ACTION_STATUS 'T'
+#define ACTION_ATTACK 'F'
+#define ACTION_MODE 'M'
+#define ACTION_HAND 'H'
+#define ACTION_USE_SPELL 'U'
+#define ACTION_QUIT 'Q'
+#define ACTION_SAVE 'Z'
+#define ACTION_LOAD 'L'
+
+#define PLAYER_HEALTH 100
+#define PLAYER_DAMAGE 20
+#define FIELD_WIDTH 15
+#define FIELD_HEIGHT 15
+#define ENEMY_GOBLIN_HP 40
+#define ENEMY_GOBLIN_DMG 8
+#define BUILDING_SPAWN_DELAY 5
+#define POTION_MIN_COUNT 3
+#define POTION_COUNT_VARIATION 3
+#define POTION_TYPE_COUNT 2
+#define ATTACK_RANGE_MELEE 1
+
+#define MIN_SPELL_INDEX 0
+
+#define START_POSITION 0
+#define LEVEL_UP_THRESHOLD 50
+#define HEALTH_SHIFT 10
+#define MAX_HEALTH 100
+#define SCORE_PER_ATTACK 10
+#define POTION_SMALL_HEAL 20
+#define POTION_LARGE_HEAL 50
+#define RANGE_MODE_ON 1
+#define RANGE_MODE_OFF 0
+#define DAMAGE_SHIFT 5
+#define MOVE_BLOCKED false
+#define MOVE_ALLOWED true
+#define SLOWED_OFF 0
+#define SLOWED_ON 1
+
+#define SUMMON_OFFSET 1
+#define FIELD_MIN 0
+
+#define FIELD_MIN 0
+#define DIR_UP 'w'
+#define DIR_DOWN 's'
+#define DIR_LEFT 'a'
+#define DIR_RIGHT 'd'
+
+#define ATTACK_RANGE_MELEE 1
+
+
+#endif // CONSTANTS_HPP

@@ -1,0 +1,913 @@
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [13:48:48] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:48] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [13:48:52] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:52] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [13:48:52] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:52] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [13:48:53] [MOVE] Игрок: (3,1) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:53] [MOVE] Игрок: (3,1) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [13:48:53] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:53] [MOVE] Игрок: (3,2) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [13:48:53] [MOVE] Игрок: (3,3) → (3,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:53] [MOVE] Игрок: (3,3) → (3,4)
+onEvent вызван! Тип: 1
+Сообщение: [13:48:56] [DAMAGE] Игрок нанес 5 урона → Враг #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:56] [DAMAGE] Игрок нанес 5 урона → Враг #1
+onEvent вызван! Тип: 2
+Сообщение: [13:48:56] [DEATH] Враг #1 погиб на (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:56] [DEATH] Враг #1 погиб на (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [13:48:56] [MOVE] Игрок: (3,4) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [13:48:56] [MOVE] Игрок: (3,4) → (4,4)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [15:44:52] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:44:52] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 5
+Сообщение: [15:44:56] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:44:56] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 3
+Сообщение: [15:45:05] [SPELL] 'Summon Spell' использовано на (1,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:05] [SPELL] 'Summon Spell' использовано на (1,1)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:05] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:05] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:06] [MOVE] Игрок: (2,1) → (2,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:06] [MOVE] Игрок: (2,1) → (2,2)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:06] [MOVE] Игрок: (2,2) → (2,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:06] [MOVE] Игрок: (2,2) → (2,3)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:06] [MOVE] Игрок: (2,3) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:06] [MOVE] Игрок: (2,3) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:06] [MOVE] Игрок: (3,3) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:06] [MOVE] Игрок: (3,3) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:06] [MOVE] Игрок: (3,2) → (4,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:06] [MOVE] Игрок: (3,2) → (4,2)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:07] [MOVE] Игрок: (4,2) → (4,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:07] [MOVE] Игрок: (4,2) → (4,3)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:07] [MOVE] Игрок: (4,3) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:07] [MOVE] Игрок: (4,3) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:07] [MOVE] Игрок: (4,4) → (4,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:07] [MOVE] Игрок: (4,4) → (4,5)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:07] [MOVE] Игрок: (4,5) → (5,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:07] [MOVE] Игрок: (4,5) → (5,5)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:08] [MOVE] Игрок: (5,5) → (6,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:08] [MOVE] Игрок: (5,5) → (6,5)
+onEvent вызван! Тип: 0
+Сообщение: [15:45:08] [MOVE] Игрок: (6,5) → (6,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:08] [MOVE] Игрок: (6,5) → (6,4)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [15:45:28] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:45:28] [LEVEL] Начат уровень 0: Level 1: Tutorial
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:24:47] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:47] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:24:49] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:49] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:49] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:49] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:49] [MOVE] Игрок: (3,1) → (4,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:49] [MOVE] Игрок: (3,1) → (4,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:49] [MOVE] Игрок: (4,1) → (4,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:49] [MOVE] Игрок: (4,1) → (4,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:49] [MOVE] Игрок: (4,2) → (4,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:49] [MOVE] Игрок: (4,2) → (4,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (4,3) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (4,3) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (3,3) → (2,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (3,3) → (2,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (2,3) → (2,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (2,3) → (2,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (2,4) → (2,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (2,4) → (2,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (2,5) → (2,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (2,5) → (2,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:50] [MOVE] Игрок: (2,6) → (3,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:50] [MOVE] Игрок: (2,6) → (3,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:51] [MOVE] Игрок: (3,6) → (4,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:51] [MOVE] Игрок: (3,6) → (4,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:51] [MOVE] Игрок: (4,6) → (5,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:51] [MOVE] Игрок: (4,6) → (5,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:51] [MOVE] Игрок: (5,6) → (5,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:51] [MOVE] Игрок: (5,6) → (5,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:51] [MOVE] Игрок: (5,5) → (5,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:51] [MOVE] Игрок: (5,5) → (5,4)
+onEvent вызван! Тип: 1
+Сообщение: [16:24:57] [DAMAGE] Игрок нанес 5 урона → Враг #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [DAMAGE] Игрок нанес 5 урона → Враг #1
+onEvent вызван! Тип: 2
+Сообщение: [16:24:57] [DEATH] Враг #1 погиб на (6,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [DEATH] Враг #1 погиб на (6,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:57] [MOVE] Игрок: (5,4) → (6,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [MOVE] Игрок: (5,4) → (6,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:57] [MOVE] Игрок: (6,4) → (5,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [MOVE] Игрок: (6,4) → (5,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:57] [MOVE] Игрок: (5,4) → (5,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [MOVE] Игрок: (5,4) → (5,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:57] [MOVE] Игрок: (5,5) → (5,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:57] [MOVE] Игрок: (5,5) → (5,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:58] [MOVE] Игрок: (5,6) → (5,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:58] [MOVE] Игрок: (5,6) → (5,7)
+onEvent вызван! Тип: 1
+Сообщение: [16:24:59] [DAMAGE] Игрок нанес 5 урона → Враг #2
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:59] [DAMAGE] Игрок нанес 5 урона → Враг #2
+onEvent вызван! Тип: 2
+Сообщение: [16:24:59] [DEATH] Враг #2 погиб на (5,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:59] [DEATH] Враг #2 погиб на (5,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:59] [MOVE] Игрок: (5,7) → (5,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:59] [MOVE] Игрок: (5,7) → (5,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:24:59] [MOVE] Игрок: (5,6) → (5,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:24:59] [MOVE] Игрок: (5,6) → (5,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:00] [MOVE] Игрок: (5,7) → (6,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:00] [MOVE] Игрок: (5,7) → (6,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:00] [MOVE] Игрок: (6,7) → (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:00] [MOVE] Игрок: (6,7) → (7,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:00] [MOVE] Игрок: (7,7) → (8,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:00] [MOVE] Игрок: (7,7) → (8,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:01] [MOVE] Игрок: (8,7) → (8,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:01] [MOVE] Игрок: (8,7) → (8,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:01] [MOVE] Игрок: (8,6) → (8,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:01] [MOVE] Игрок: (8,6) → (8,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:10] [MOVE] Игрок: (8,5) → (7,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:10] [MOVE] Игрок: (8,5) → (7,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:10] [MOVE] Игрок: (7,5) → (7,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:10] [MOVE] Игрок: (7,5) → (7,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:10] [MOVE] Игрок: (7,4) → (6,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:10] [MOVE] Игрок: (7,4) → (6,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:10] [MOVE] Игрок: (6,4) → (6,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:10] [MOVE] Игрок: (6,4) → (6,3)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:11] [DAMAGE] Игрок нанес 9 урона → Враг #3
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:11] [DAMAGE] Игрок нанес 9 урона → Враг #3
+onEvent вызван! Тип: 2
+Сообщение: [16:25:11] [DEATH] Враг #3 погиб на (5,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:11] [DEATH] Враг #3 погиб на (5,3)
+onEvent вызван! Тип: 6
+Сообщение: [16:25:11] [LEVEL] Завершен уровень 0: Level 1: Tutorial | Ходы: 35 | HP: 997
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:11] [LEVEL] Завершен уровень 0: Level 1: Tutorial | Ходы: 35 | HP: 997
+onEvent вызван! Тип: 5
+Сообщение: [16:25:12] [LEVEL] Начат уровень 1: Level 2: Tower Defense
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:12] [LEVEL] Начат уровень 1: Level 2: Tower Defense
+onEvent вызван! Тип: 0
+Сообщение: [16:25:13] [MOVE] Игрок: (1,1) → (1,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:13] [MOVE] Игрок: (1,1) → (1,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:14] [MOVE] Игрок: (1,2) → (1,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:14] [MOVE] Игрок: (1,2) → (1,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:14] [MOVE] Игрок: (1,3) → (2,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:14] [MOVE] Игрок: (1,3) → (2,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (2,3) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (2,3) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (3,3) → (3,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (3,3) → (3,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (3,4) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (3,4) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (4,4) → (4,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (4,4) → (4,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (4,5) → (5,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (4,5) → (5,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:15] [MOVE] Игрок: (5,5) → (6,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:15] [MOVE] Игрок: (5,5) → (6,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (6,5) → (6,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (6,5) → (6,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (6,4) → (6,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (6,4) → (6,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (6,3) → (6,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (6,3) → (6,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (6,2) → (7,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (6,2) → (7,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (7,2) → (7,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (7,2) → (7,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:16] [MOVE] Игрок: (7,3) → (8,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:16] [MOVE] Игрок: (7,3) → (8,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:17] [MOVE] Игрок: (8,3) → (8,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:17] [MOVE] Игрок: (8,3) → (8,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:17] [MOVE] Игрок: (8,4) → (8,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:17] [MOVE] Игрок: (8,4) → (8,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:17] [MOVE] Игрок: (8,5) → (9,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:17] [MOVE] Игрок: (8,5) → (9,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:17] [MOVE] Игрок: (9,5) → (9,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:17] [MOVE] Игрок: (9,5) → (9,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:17] [MOVE] Игрок: (9,6) → (8,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:17] [MOVE] Игрок: (9,6) → (8,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:18] [MOVE] Игрок: (8,6) → (7,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:18] [MOVE] Игрок: (8,6) → (7,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:20] [MOVE] Игрок: (7,6) → (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:20] [MOVE] Игрок: (7,6) → (7,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:22] [MOVE] Игрок: (7,7) → (7,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:22] [MOVE] Игрок: (7,7) → (7,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:22] [MOVE] Игрок: (7,6) → (7,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:22] [MOVE] Игрок: (7,6) → (7,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:23] [MOVE] Игрок: (7,5) → (7,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:23] [MOVE] Игрок: (7,5) → (7,6)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:27] [DAMAGE] Игрок нанес 9 урона → Башня #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:27] [DAMAGE] Игрок нанес 9 урона → Башня #1
+onEvent вызван! Тип: 1
+Сообщение: [16:25:28] [DAMAGE] Игрок нанес 9 урона → Башня #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:28] [DAMAGE] Игрок нанес 9 урона → Башня #1
+onEvent вызван! Тип: 2
+Сообщение: [16:25:28] [DEATH] Башня #1 погиб на (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:28] [DEATH] Башня #1 погиб на (7,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:28] [MOVE] Игрок: (7,6) → (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:28] [MOVE] Игрок: (7,6) → (7,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:29] [MOVE] Игрок: (7,7) → (7,8)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:29] [MOVE] Игрок: (7,7) → (7,8)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:29] [MOVE] Игрок: (7,8) → (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:29] [MOVE] Игрок: (7,8) → (7,7)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:30] [DAMAGE] Игрок нанес 9 урона → Враг #3
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:30] [DAMAGE] Игрок нанес 9 урона → Враг #3
+onEvent вызван! Тип: 2
+Сообщение: [16:25:30] [DEATH] Враг #3 погиб на (6,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:30] [DEATH] Враг #3 погиб на (6,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:31] [MOVE] Игрок: (7,7) → (7,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:31] [MOVE] Игрок: (7,7) → (7,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:31] [MOVE] Игрок: (7,6) → (7,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:31] [MOVE] Игрок: (7,6) → (7,5)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:32] [DAMAGE] Игрок нанес 9 урона → Враг #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:32] [DAMAGE] Игрок нанес 9 урона → Враг #1
+onEvent вызван! Тип: 2
+Сообщение: [16:25:32] [DEATH] Враг #1 погиб на (8,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:32] [DEATH] Враг #1 погиб на (8,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:32] [MOVE] Игрок: (7,5) → (8,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:32] [MOVE] Игрок: (7,5) → (8,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:33] [MOVE] Игрок: (8,5) → (8,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:33] [MOVE] Игрок: (8,5) → (8,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:33] [MOVE] Игрок: (8,6) → (8,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:33] [MOVE] Игрок: (8,6) → (8,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:33] [MOVE] Игрок: (8,7) → (7,7)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:33] [MOVE] Игрок: (8,7) → (7,7)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:34] [MOVE] Игрок: (7,7) → (7,8)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:34] [MOVE] Игрок: (7,7) → (7,8)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:34] [MOVE] Игрок: (7,8) → (6,8)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:34] [MOVE] Игрок: (7,8) → (6,8)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:34] [MOVE] Игрок: (6,8) → (6,9)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:34] [MOVE] Игрок: (6,8) → (6,9)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:35] [DAMAGE] Игрок нанес 9 урона → Враг #2
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:35] [DAMAGE] Игрок нанес 9 урона → Враг #2
+onEvent вызван! Тип: 2
+Сообщение: [16:25:35] [DEATH] Враг #2 погиб на (5,9)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:35] [DEATH] Враг #2 погиб на (5,9)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:35] [MOVE] Игрок: (6,9) → (5,9)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:35] [MOVE] Игрок: (6,9) → (5,9)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:25:45] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:45] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:25:48] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:48] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:48] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:48] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:48] [MOVE] Игрок: (3,1) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:48] [MOVE] Игрок: (3,1) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:49] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:49] [MOVE] Игрок: (3,2) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:49] [MOVE] Игрок: (3,3) → (3,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:49] [MOVE] Игрок: (3,3) → (3,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:49] [MOVE] Игрок: (3,4) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:49] [MOVE] Игрок: (3,4) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:50] [MOVE] Игрок: (4,4) → (5,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:50] [MOVE] Игрок: (4,4) → (5,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:50] [MOVE] Игрок: (5,4) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:50] [MOVE] Игрок: (5,4) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:25:51] [MOVE] Игрок: (4,4) → (4,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:51] [MOVE] Игрок: (4,4) → (4,3)
+onEvent вызван! Тип: 1
+Сообщение: [16:25:54] [DAMAGE] Игрок нанес 5 урона → Враг #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:54] [DAMAGE] Игрок нанес 5 урона → Враг #1
+onEvent вызван! Тип: 2
+Сообщение: [16:25:54] [DEATH] Враг #1 погиб на (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:25:54] [DEATH] Враг #1 погиб на (3,3)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:53:41] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:41] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:53:42] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:42] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:42] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:42] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:42] [MOVE] Игрок: (3,1) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:42] [MOVE] Игрок: (3,1) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:42] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:42] [MOVE] Игрок: (3,2) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:43] [MOVE] Игрок: (3,3) → (4,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:43] [MOVE] Игрок: (3,3) → (4,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:43] [MOVE] Игрок: (4,3) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:43] [MOVE] Игрок: (4,3) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:43] [MOVE] Игрок: (4,4) → (5,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:43] [MOVE] Игрок: (4,4) → (5,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:43] [MOVE] Игрок: (5,4) → (5,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:43] [MOVE] Игрок: (5,4) → (5,5)
+onEvent вызван! Тип: 1
+Сообщение: [16:53:44] [DAMAGE] Игрок нанес 5 урона → Враг #1
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:44] [DAMAGE] Игрок нанес 5 урона → Враг #1
+onEvent вызван! Тип: 2
+Сообщение: [16:53:44] [DEATH] Враг #1 погиб на (4,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:44] [DEATH] Враг #1 погиб на (4,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:45] [MOVE] Игрок: (5,5) → (4,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:45] [MOVE] Игрок: (5,5) → (4,5)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:45] [MOVE] Игрок: (4,5) → (4,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:45] [MOVE] Игрок: (4,5) → (4,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:45] [MOVE] Игрок: (4,6) → (3,6)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:45] [MOVE] Игрок: (4,6) → (3,6)
+onEvent вызван! Тип: 0
+Сообщение: [16:53:45] [MOVE] Игрок: (3,6) → (3,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:53:45] [MOVE] Игрок: (3,6) → (3,5)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:58:08] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:08] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:58:10] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:10] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:11] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:11] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:11] [MOVE] Игрок: (3,1) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:11] [MOVE] Игрок: (3,1) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:11] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:11] [MOVE] Игрок: (3,2) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:12] [MOVE] Игрок: (3,3) → (4,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:12] [MOVE] Игрок: (3,3) → (4,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:12] [MOVE] Игрок: (4,3) → (4,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:12] [MOVE] Игрок: (4,3) → (4,4)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:12] [MOVE] Игрок: (4,4) → (4,5)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:12] [MOVE] Игрок: (4,4) → (4,5)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:58:28] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:28] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:58:29] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:29] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:30] [MOVE] Игрок: (2,1) → (2,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:30] [MOVE] Игрок: (2,1) → (2,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:30] [MOVE] Игрок: (2,2) → (2,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:30] [MOVE] Игрок: (2,2) → (2,3)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:33] [MOVE] Игрок: (2,3) → (2,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:33] [MOVE] Игрок: (2,3) → (2,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:34] [MOVE] Игрок: (2,2) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:34] [MOVE] Игрок: (2,2) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:37] [MOVE] Игрок: (2,1) → (1,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:37] [MOVE] Игрок: (2,1) → (1,1)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [16:58:53] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:53] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [16:58:54] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:54] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:55] [MOVE] Игрок: (2,1) → (2,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:55] [MOVE] Игрок: (2,1) → (2,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:55] [MOVE] Игрок: (2,2) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:55] [MOVE] Игрок: (2,2) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [16:58:56] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [16:58:56] [MOVE] Игрок: (3,2) → (3,3)
+=== GameLogger конструктор ===
+Режим: 1
+Файл: logs/game.log
+Директория создана: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs
+Файл успешно открыт: C:/Users/Arkana/CLionProjects/untitled2/cmake-build-debug/logs/game.log
+Подписка на EventBus выполнена
+onEvent вызван! Тип: 5
+Сообщение: [15:49:43] [LEVEL] Начат уровень 0: Level 1: Tutorial
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:43] [LEVEL] Начат уровень 0: Level 1: Tutorial
+onEvent вызван! Тип: 0
+Сообщение: [15:49:52] [MOVE] Игрок: (1,1) → (2,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:52] [MOVE] Игрок: (1,1) → (2,1)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:52] [MOVE] Игрок: (2,1) → (3,1)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:52] [MOVE] Игрок: (2,1) → (3,1)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:53] [MOVE] Игрок: (3,1) → (3,2)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:53] [MOVE] Игрок: (3,1) → (3,2)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:54] [MOVE] Игрок: (3,2) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:54] [MOVE] Игрок: (3,2) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:56] [MOVE] Игрок: (3,3) → (3,4)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:56] [MOVE] Игрок: (3,3) → (3,4)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:57] [MOVE] Игрок: (3,4) → (3,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:57] [MOVE] Игрок: (3,4) → (3,3)
+onEvent вызван! Тип: 0
+Сообщение: [15:49:58] [MOVE] Игрок: (3,3) → (2,3)
+fileStream.is_open() = true
+logToFile вызван
+Записано в game.log: [15:49:58] [MOVE] Игрок: (3,3) → (2,3)

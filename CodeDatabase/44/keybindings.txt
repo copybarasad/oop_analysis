@@ -1,0 +1,18 @@
+# Настройки управления игрой
+# Формат: command_name=key
+# Доступные команды:
+#   move_up, move_down, move_left, move_right
+#   attack, switch_weapon, use_spell, view_spells
+#   save_game, load_game, quit
+
+move_up=w
+move_down=s
+move_left=a
+move_right=d
+attack=f
+switch_weapon=q
+use_spell=e
+view_spells=v
+save_game=z
+load_game=x
+quit=p

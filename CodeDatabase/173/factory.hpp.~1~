@@ -1,0 +1,18 @@
+#ifndef WEAPON_FACTORY_HPP
+#define WEAPON_FACTORY_HPP
+
+#include "weapon.hpp"
+
+class WeaponFactory {
+  public:
+    WeaponFactory();
+
+    Weapon createMelee();
+    Weapon createRanged();
+    void incrementLevel();
+
+  private:
+    int m_Level;
+};
+
+#endif /* WEAPON_FACTORY_HPP */

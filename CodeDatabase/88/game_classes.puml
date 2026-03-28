@@ -1,0 +1,223 @@
+@startuml Game Classes UML
+
+!theme plain
+
+class Game {
+    --
+    +advanceToNextLevel(): bool
+    +getLevel(): int
+}
+
+class Command {
+    --
+    +execute(Game& game): void
+    +getName(): std::string
+}
+
+class MoveCommand {
+    -direction: std::string
+    --
+    +MoveCommand(const std::string& dir)
+}
+
+class SwitchWeaponCommand {
+    --
+}
+
+class CastSpellCommand {
+    -spellIndex: int
+    --
+    +CastSpellCommand(int index)
+}
+
+class EndGameCommand {
+    --
+}
+class SaveGameCommand {
+    --
+}
+
+class HelpCommand {
+    --
+}
+
+
+class ConsoleInputHandler {
+    -commandMap: std::map<std::string, std::string> 
+    --
+    +ConsoleInputHandler() 
+    +parseCommand(const std::string& input): std::unique_ptr<Command>
+    +printAvailableCommands(): void
+    +loadFromFile(const std::string& filename): bool
+    +getCommandMap(): const std::map<std::string, std::string>&
+    -loadDefaultCommands(): void 
+}
+
+class GameView<typename RendererType> {
+    -renderer: RendererType
+    -game: Game*
+    --
+    +GameView(const Game* gameInstance)
+    +render(): void
+    +renderMessage(const std::string& message): void
+    +setGame(const Game* gameInstance): void 
+    +getRenderer(): RendererType& 
+}
+class Renderer {
+    --
+    +render(const Game& game): void
+    +renderMessage(const std::string& message): void
+}
+
+class InputHandler {
+    --
+    +parseCommand(const std::string& input): std::unique_ptr<Command>
+    +printAvailableCommands(): void
+    +loadFromFile(const std::string& filename): bool
+}
+
+
+class ConsoleRenderer {
+    --
+}
+
+class GameController<typename InputHandlerType> {
+    -inputHandler: InputHandlerType
+    -game: Game*
+    -onGameStateChanged: std::function<void()> 
+    --
+    +GameController(Game* gameInstance, const std::string& configFile = "")
+    +setOnGameStateChanged(std::function<void()> callback): void
+    +readRawInput(): std::string
+    +getPlayerCommand(): std::unique_ptr<Command>
+    +processCommand(Command* command): CommandResult
+    +processCommand(const std::string& rawInput): CommandResult 
+    +getInputHandler(): const InputHandlerType&
+    +runGameLoop(): void
+}
+
+
+class GameMap {
+
+}
+
+class Plot {
+ 
+}
+
+abstract class Character {
+   
+}
+
+class Player {
+
+}
+
+class Enemy {
+}
+
+class Ally {
+
+}
+
+class Tower {
+    
+}
+
+class Movement {
+
+}
+
+class Combat {
+   
+}
+
+class MageTower {
+
+}
+
+
+class EnemyManager {
+
+}
+
+class MagicHand {
+
+}
+enum WeaponType {
+
+}
+
+enum CommandResult {
+    Success
+    UnknownCommand
+    GameEnd
+    SaveGame
+}
+
+class GameException{
+
+}
+class LoadException{
+
+}
+class FileFormatException{
+
+}
+
+Command <|-- MoveCommand
+Command <|-- SwitchWeaponCommand
+Command <|-- CastSpellCommand
+Command <|-- HelpCommand
+Command <|-- EndGameCommand
+Command <|-- SaveGameCommand
+
+InputHandler <|-- ConsoleInputHandler
+InputHandler --> Command: uses
+ConsoleInputHandler --> Command: uses
+ConsoleInputHandler <-- GameController: used in template
+GameController --> Command: uses
+GameController --> Game: contains
+GameController --> CommandResult: returns
+
+Renderer <|-- ConsoleRenderer
+GameView --> Renderer: uses in template
+
+
+Character <|-- Player
+Character <|-- Enemy  
+Character <|-- Tower
+Character <|-- Ally
+Tower <|-- MageTower
+Player --> WeaponType : uses
+
+Game --> GameMap : contains
+Game --> Player : manages
+Game --> Movement : uses
+Game --> Combat : uses
+Game --> EnemyManager : uses
+Game --> MagicHand : uses
+Game --> GameException: uses
+Game --> FileFormatException: uses
+Game --> LoadException: uses
+
+GameMap --> Plot : contains
+Plot --> Character : contains
+
+Movement --> GameMap : uses
+Combat --> GameMap : uses
+Combat --> Player : targets
+Combat --> Character : targets
+
+
+
+EnemyManager --> GameMap : uses
+EnemyManager --> Tower : spawns from
+EnemyManager --> Enemy : creates
+
+MagicHand --> GameMap : uses
+MagicHand --> Movement : composes
+MagicHand --> Combat : composes
+MagicHand --> Player : uses
+
+@enduml

@@ -1,0 +1,42 @@
+#pragma once
+
+// Параметры поля
+#define SIZE_X 20
+#define SIZE_Y 10
+#define WALL_DENSITY 0.1
+#define INVISIBLE_TRAPS 0
+// Параметры игрока
+#define PLAYER_DAMAGE 10
+#define PLAYER_BOW_DAMAGE 5
+#define PLAYER_START_X 1
+#define PLAYER_START_Y 1
+#define PLAYER_HEALTH 500
+#define PLAYER_HAND_SIZE 4
+#define PLAYER_START_SPELL_COUNT 2
+// Параметры врагов
+#define ENEMY_COUNT 3
+#define ENEMY_DAMAGE 5
+#define ENEMY_HEALTH 20
+// Параметры заклинаний
+#define PRICE_RANGE_MIN 5
+#define PRICE_RANGE_MAX 10
+#define DAMAGE_RANGE_MIN 10
+#define DAMAGE_RANGE_MAX 20
+#define AOE_DAMAGE_MULTIPLIER 0.5
+#define SHOP_SPELLS_COUNT 5
+// Параметры башен
+#define TOWER_COUNT 1
+#define TOWER_DAMAGE 10
+#define TOWER_RANGE 5
+#define TOWER_HEALTH 25
+#define TOWER_DELAY 3
+#define POINTS_FOR_KILL 10
+// Константы для уровней
+#define LEVEL_BASE_SIZE_STEP 3
+#define LEVEL_ENEMY_DAMAGE_STEP 1
+#define LEVEL_ENEMY_HEALTH_STEP 5
+#define LEVEL_TOWER_DAMAGE_STEP 1
+#define LEVEL_TOWER_HEALTH_STEP 5
+#define LEVEL_PLAYER_UPGRADE_DAMAGE_STEP 5
+#define LEVEL_PLAYER_UPGRADE_BOW_STEP 3
+#define LEVEL_PLAYER_UPGRADE_HEALTH_STEP 10

@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>dead.PNG</file>
+        <file>lawa.PNG</file>
+        <file>tower.PNG</file>
+        <file>water.PNG</file>
+        <file>win.PNG</file>
+        <file>archer.PNG</file>
+        <file>archerCard.jpg</file>
+        <file>block.jpg</file>
+        <file>earthquakeCard.jpg</file>
+        <file>fireballCard.jpg</file>
+        <file>healthPlayer.jpg</file>
+        <file>healthTower.jpg</file>
+        <file>trapCard.PNG</file>
+        <file>upgradeCard.jpg</file>
+        <file>poisonTrapCell.jpg</file>
+        <file>building.PNG</file>
+        <file>mana.PNG</file>
+        <file>enemy.jpg</file>
+        <file>player.jpg</file>
+        <file>healthPoint.PNG</file>
+        <file>map.jpg</file>
+        <file>attack.wav</file>
+        <file>levelComplete.mp3</file>
+        <file>levelFailed.mp3</file>
+        <file>useSpell.mp3</file>
+        <file>initState.JPEG</file>
+        <file>levelFailed.JPEG</file>
+        <file>loadedLevel.mp3</file>
+    </qresource>
+</RCC>

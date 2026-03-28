@@ -1,0 +1,5 @@
+#include "DirectDamageSpell.h"
+#include "AreaDamageSpell.h"
+#include "TrapSpell.h"
+#include "SummonSpell.h"
+#include "EnhancementSpell.h"

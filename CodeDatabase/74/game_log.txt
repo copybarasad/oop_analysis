@@ -1,0 +1,2 @@
+Switched attack mode.Ranged attack hit!Башня (6,7) попала по игроку!
+Ranged attack missed.Switched attack mode.

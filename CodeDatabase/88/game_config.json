@@ -1,0 +1,13 @@
+{
+  "commands": {
+    "w": "move_up",
+    "a": "move_left",
+    "s": "move_down",
+    "d": "move_right",
+    "switch": "switch_weapon",
+    "end": "end_game",
+    "save": "save_game",
+    "help": "help"
+  }
+}
+

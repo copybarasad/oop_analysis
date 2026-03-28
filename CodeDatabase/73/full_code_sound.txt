@@ -1,0 +1,3630 @@
+====================
+FILE: CMakeCXXCompilerId.cpp
+====================
+/* This source file must have a .cpp extension so that all C++ compilers
+   recognize the extension without flags.  Borland does not know .cxx for
+   example.  */
+#ifndef __cplusplus
+# error "A C compiler has been selected for C++."
+#endif
+
+#if !defined(__has_include)
+/* If the compiler does not have __has_include, pretend the answer is
+   always no.  */
+#  define __has_include(x) 0
+#endif
+
+
+/* Version number components: V=Version, R=Revision, P=Patch
+   Version date components:   YYYY=Year, MM=Month,   DD=Day  */
+
+#if defined(__INTEL_COMPILER) || defined(__ICC)
+# define COMPILER_ID "Intel"
+# if defined(_MSC_VER)
+#  define SIMULATE_ID "MSVC"
+# endif
+# if defined(__GNUC__)
+#  define SIMULATE_ID "GNU"
+# endif
+  /* __INTEL_COMPILER = VRP prior to 2021, and then VVVV for 2021 and later,
+     except that a few beta releases use the old format with V=2021.  */
+# if __INTEL_COMPILER < 2021 || __INTEL_COMPILER == 202110 || __INTEL_COMPILER == 202111
+#  define COMPILER_VERSION_MAJOR DEC(__INTEL_COMPILER/100)
+#  define COMPILER_VERSION_MINOR DEC(__INTEL_COMPILER/10 % 10)
+#  if defined(__INTEL_COMPILER_UPDATE)
+#   define COMPILER_VERSION_PATCH DEC(__INTEL_COMPILER_UPDATE)
+#  else
+#   define COMPILER_VERSION_PATCH DEC(__INTEL_COMPILER   % 10)
+#  endif
+# else
+#  define COMPILER_VERSION_MAJOR DEC(__INTEL_COMPILER)
+#  define COMPILER_VERSION_MINOR DEC(__INTEL_COMPILER_UPDATE)
+   /* The third version component from --version is an update index,
+      but no macro is provided for it.  */
+#  define COMPILER_VERSION_PATCH DEC(0)
+# endif
+# if defined(__INTEL_COMPILER_BUILD_DATE)
+   /* __INTEL_COMPILER_BUILD_DATE = YYYYMMDD */
+#  define COMPILER_VERSION_TWEAK DEC(__INTEL_COMPILER_BUILD_DATE)
+# endif
+# if defined(_MSC_VER)
+   /* _MSC_VER = VVRR */
+#  define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
+#  define SIMULATE_VERSION_MINOR DEC(_MSC_VER % 100)
+# endif
+# if defined(__GNUC__)
+#  define SIMULATE_VERSION_MAJOR DEC(__GNUC__)
+# elif defined(__GNUG__)
+#  define SIMULATE_VERSION_MAJOR DEC(__GNUG__)
+# endif
+# if defined(__GNUC_MINOR__)
+#  define SIMULATE_VERSION_MINOR DEC(__GNUC_MINOR__)
+# endif
+# if defined(__GNUC_PATCHLEVEL__)
+#  define SIMULATE_VERSION_PATCH DEC(__GNUC_PATCHLEVEL__)
+# endif
+
+#elif (defined(__clang__) && defined(__INTEL_CLANG_COMPILER)) || defined(__INTEL_LLVM_COMPILER)
+# define COMPILER_ID "IntelLLVM"
+#if defined(_MSC_VER)
+# define SIMULATE_ID "MSVC"
+#endif
+#if defined(__GNUC__)
+# define SIMULATE_ID "GNU"
+#endif
+/* __INTEL_LLVM_COMPILER = VVVVRP prior to 2021.2.0, VVVVRRPP for 2021.2.0 and
+ * later.  Look for 6 digit vs. 8 digit version number to decide encoding.
+ * VVVV is no smaller than the current year when a version is released.
+ */
+#if __INTEL_LLVM_COMPILER < 1000000L
+# define COMPILER_VERSION_MAJOR DEC(__INTEL_LLVM_COMPILER/100)
+# define COMPILER_VERSION_MINOR DEC(__INTEL_LLVM_COMPILER/10 % 10)
+# define COMPILER_VERSION_PATCH DEC(__INTEL_LLVM_COMPILER    % 10)
+#else
+# define COMPILER_VERSION_MAJOR DEC(__INTEL_LLVM_COMPILER/10000)
+# define COMPILER_VERSION_MINOR DEC(__INTEL_LLVM_COMPILER/100 % 100)
+# define COMPILER_VERSION_PATCH DEC(__INTEL_LLVM_COMPILER     % 100)
+#endif
+#if defined(_MSC_VER)
+  /* _MSC_VER = VVRR */
+# define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
+# define SIMULATE_VERSION_MINOR DEC(_MSC_VER % 100)
+#endif
+#if defined(__GNUC__)
+# define SIMULATE_VERSION_MAJOR DEC(__GNUC__)
+#elif defined(__GNUG__)
+# define SIMULATE_VERSION_MAJOR DEC(__GNUG__)
+#endif
+#if defined(__GNUC_MINOR__)
+# define SIMULATE_VERSION_MINOR DEC(__GNUC_MINOR__)
+#endif
+#if defined(__GNUC_PATCHLEVEL__)
+# define SIMULATE_VERSION_PATCH DEC(__GNUC_PATCHLEVEL__)
+#endif
+
+#elif defined(__PATHCC__)
+# define COMPILER_ID "PathScale"
+# define COMPILER_VERSION_MAJOR DEC(__PATHCC__)
+# define COMPILER_VERSION_MINOR DEC(__PATHCC_MINOR__)
+# if defined(__PATHCC_PATCHLEVEL__)
+#  define COMPILER_VERSION_PATCH DEC(__PATHCC_PATCHLEVEL__)
+# endif
+
+#elif defined(__BORLANDC__) && defined(__CODEGEARC_VERSION__)
+# define COMPILER_ID "Embarcadero"
+# define COMPILER_VERSION_MAJOR HEX(__CODEGEARC_VERSION__>>24 & 0x00FF)
+# define COMPILER_VERSION_MINOR HEX(__CODEGEARC_VERSION__>>16 & 0x00FF)
+# define COMPILER_VERSION_PATCH DEC(__CODEGEARC_VERSION__     & 0xFFFF)
+
+#elif defined(__BORLANDC__)
+# define COMPILER_ID "Borland"
+  /* __BORLANDC__ = 0xVRR */
+# define COMPILER_VERSION_MAJOR HEX(__BORLANDC__>>8)
+# define COMPILER_VERSION_MINOR HEX(__BORLANDC__ & 0xFF)
+
+#elif defined(__WATCOMC__) && __WATCOMC__ < 1200
+# define COMPILER_ID "Watcom"
+   /* __WATCOMC__ = VVRR */
+# define COMPILER_VERSION_MAJOR DEC(__WATCOMC__ / 100)
+# define COMPILER_VERSION_MINOR DEC((__WATCOMC__ / 10) % 10)
+# if (__WATCOMC__ % 10) > 0
+#  define COMPILER_VERSION_PATCH DEC(__WATCOMC__ % 10)
+# endif
+
+#elif defined(__WATCOMC__)
+# define COMPILER_ID "OpenWatcom"
+   /* __WATCOMC__ = VVRP + 1100 */
+# define COMPILER_VERSION_MAJOR DEC((__WATCOMC__ - 1100) / 100)
+# define COMPILER_VERSION_MINOR DEC((__WATCOMC__ / 10) % 10)
+# if (__WATCOMC__ % 10) > 0
+#  define COMPILER_VERSION_PATCH DEC(__WATCOMC__ % 10)
+# endif
+
+#elif defined(__SUNPRO_CC)
+# define COMPILER_ID "SunPro"
+# if __SUNPRO_CC >= 0x5100
+   /* __SUNPRO_CC = 0xVRRP */
+#  define COMPILER_VERSION_MAJOR HEX(__SUNPRO_CC>>12)
+#  define COMPILER_VERSION_MINOR HEX(__SUNPRO_CC>>4 & 0xFF)
+#  define COMPILER_VERSION_PATCH HEX(__SUNPRO_CC    & 0xF)
+# else
+   /* __SUNPRO_CC = 0xVRP */
+#  define COMPILER_VERSION_MAJOR HEX(__SUNPRO_CC>>8)
+#  define COMPILER_VERSION_MINOR HEX(__SUNPRO_CC>>4 & 0xF)
+#  define COMPILER_VERSION_PATCH HEX(__SUNPRO_CC    & 0xF)
+# endif
+
+#elif defined(__HP_aCC)
+# define COMPILER_ID "HP"
+  /* __HP_aCC = VVRRPP */
+# define COMPILER_VERSION_MAJOR DEC(__HP_aCC/10000)
+# define COMPILER_VERSION_MINOR DEC(__HP_aCC/100 % 100)
+# define COMPILER_VERSION_PATCH DEC(__HP_aCC     % 100)
+
+#elif defined(__DECCXX)
+# define COMPILER_ID "Compaq"
+  /* __DECCXX_VER = VVRRTPPPP */
+# define COMPILER_VERSION_MAJOR DEC(__DECCXX_VER/10000000)
+# define COMPILER_VERSION_MINOR DEC(__DECCXX_VER/100000  % 100)
+# define COMPILER_VERSION_PATCH DEC(__DECCXX_VER         % 10000)
+
+#elif defined(__IBMCPP__) && defined(__COMPILER_VER__)
+# define COMPILER_ID "zOS"
+  /* __IBMCPP__ = VRP */
+# define COMPILER_VERSION_MAJOR DEC(__IBMCPP__/100)
+# define COMPILER_VERSION_MINOR DEC(__IBMCPP__/10 % 10)
+# define COMPILER_VERSION_PATCH DEC(__IBMCPP__    % 10)
+
+#elif defined(__open_xl__) && defined(__clang__)
+# define COMPILER_ID "IBMClang"
+# define COMPILER_VERSION_MAJOR DEC(__open_xl_version__)
+# define COMPILER_VERSION_MINOR DEC(__open_xl_release__)
+# define COMPILER_VERSION_PATCH DEC(__open_xl_modification__)
+# define COMPILER_VERSION_TWEAK DEC(__open_xl_ptf_fix_level__)
+
+
+#elif defined(__ibmxl__) && defined(__clang__)
+# define COMPILER_ID "XLClang"
+# define COMPILER_VERSION_MAJOR DEC(__ibmxl_version__)
+# define COMPILER_VERSION_MINOR DEC(__ibmxl_release__)
+# define COMPILER_VERSION_PATCH DEC(__ibmxl_modification__)
+# define COMPILER_VERSION_TWEAK DEC(__ibmxl_ptf_fix_level__)
+
+
+#elif defined(__IBMCPP__) && !defined(__COMPILER_VER__) && __IBMCPP__ >= 800
+# define COMPILER_ID "XL"
+  /* __IBMCPP__ = VRP */
+# define COMPILER_VERSION_MAJOR DEC(__IBMCPP__/100)
+# define COMPILER_VERSION_MINOR DEC(__IBMCPP__/10 % 10)
+# define COMPILER_VERSION_PATCH DEC(__IBMCPP__    % 10)
+
+#elif defined(__IBMCPP__) && !defined(__COMPILER_VER__) && __IBMCPP__ < 800
+# define COMPILER_ID "VisualAge"
+  /* __IBMCPP__ = VRP */
+# define COMPILER_VERSION_MAJOR DEC(__IBMCPP__/100)
+# define COMPILER_VERSION_MINOR DEC(__IBMCPP__/10 % 10)
+# define COMPILER_VERSION_PATCH DEC(__IBMCPP__    % 10)
+
+#elif defined(__NVCOMPILER)
+# define COMPILER_ID "NVHPC"
+# define COMPILER_VERSION_MAJOR DEC(__NVCOMPILER_MAJOR__)
+# define COMPILER_VERSION_MINOR DEC(__NVCOMPILER_MINOR__)
+# if defined(__NVCOMPILER_PATCHLEVEL__)
+#  define COMPILER_VERSION_PATCH DEC(__NVCOMPILER_PATCHLEVEL__)
+# endif
+
+#elif defined(__PGI)
+# define COMPILER_ID "PGI"
+# define COMPILER_VERSION_MAJOR DEC(__PGIC__)
+# define COMPILER_VERSION_MINOR DEC(__PGIC_MINOR__)
+# if defined(__PGIC_PATCHLEVEL__)
+#  define COMPILER_VERSION_PATCH DEC(__PGIC_PATCHLEVEL__)
+# endif
+
+#elif defined(__clang__) && defined(__cray__)
+# define COMPILER_ID "CrayClang"
+# define COMPILER_VERSION_MAJOR DEC(__cray_major__)
+# define COMPILER_VERSION_MINOR DEC(__cray_minor__)
+# define COMPILER_VERSION_PATCH DEC(__cray_patchlevel__)
+# define COMPILER_VERSION_INTERNAL_STR __clang_version__
+
+
+#elif defined(_CRAYC)
+# define COMPILER_ID "Cray"
+# define COMPILER_VERSION_MAJOR DEC(_RELEASE_MAJOR)
+# define COMPILER_VERSION_MINOR DEC(_RELEASE_MINOR)
+
+#elif defined(__TI_COMPILER_VERSION__)
+# define COMPILER_ID "TI"
+  /* __TI_COMPILER_VERSION__ = VVVRRRPPP */
+# define COMPILER_VERSION_MAJOR DEC(__TI_COMPILER_VERSION__/1000000)
+# define COMPILER_VERSION_MINOR DEC(__TI_COMPILER_VERSION__/1000   % 1000)
+# define COMPILER_VERSION_PATCH DEC(__TI_COMPILER_VERSION__        % 1000)
+
+#elif defined(__CLANG_FUJITSU)
+# define COMPILER_ID "FujitsuClang"
+# define COMPILER_VERSION_MAJOR DEC(__FCC_major__)
+# define COMPILER_VERSION_MINOR DEC(__FCC_minor__)
+# define COMPILER_VERSION_PATCH DEC(__FCC_patchlevel__)
+# define COMPILER_VERSION_INTERNAL_STR __clang_version__
+
+
+#elif defined(__FUJITSU)
+# define COMPILER_ID "Fujitsu"
+# if defined(__FCC_version__)
+#   define COMPILER_VERSION __FCC_version__
+# elif defined(__FCC_major__)
+#   define COMPILER_VERSION_MAJOR DEC(__FCC_major__)
+#   define COMPILER_VERSION_MINOR DEC(__FCC_minor__)
+#   define COMPILER_VERSION_PATCH DEC(__FCC_patchlevel__)
+# endif
+# if defined(__fcc_version)
+#   define COMPILER_VERSION_INTERNAL DEC(__fcc_version)
+# elif defined(__FCC_VERSION)
+#   define COMPILER_VERSION_INTERNAL DEC(__FCC_VERSION)
+# endif
+
+
+#elif defined(__ghs__)
+# define COMPILER_ID "GHS"
+/* __GHS_VERSION_NUMBER = VVVVRP */
+# ifdef __GHS_VERSION_NUMBER
+# define COMPILER_VERSION_MAJOR DEC(__GHS_VERSION_NUMBER / 100)
+# define COMPILER_VERSION_MINOR DEC(__GHS_VERSION_NUMBER / 10 % 10)
+# define COMPILER_VERSION_PATCH DEC(__GHS_VERSION_NUMBER      % 10)
+# endif
+
+#elif defined(__TASKING__)
+# define COMPILER_ID "Tasking"
+  # define COMPILER_VERSION_MAJOR DEC(__VERSION__/1000)
+  # define COMPILER_VERSION_MINOR DEC(__VERSION__ % 100)
+# define COMPILER_VERSION_INTERNAL DEC(__VERSION__)
+
+#elif defined(__ORANGEC__)
+# define COMPILER_ID "OrangeC"
+# define COMPILER_VERSION_MAJOR DEC(__ORANGEC_MAJOR__)
+# define COMPILER_VERSION_MINOR DEC(__ORANGEC_MINOR__)
+# define COMPILER_VERSION_PATCH DEC(__ORANGEC_PATCHLEVEL__)
+
+#elif defined(__SCO_VERSION__)
+# define COMPILER_ID "SCO"
+
+#elif defined(__ARMCC_VERSION) && !defined(__clang__)
+# define COMPILER_ID "ARMCC"
+#if __ARMCC_VERSION >= 1000000
+  /* __ARMCC_VERSION = VRRPPPP */
+  # define COMPILER_VERSION_MAJOR DEC(__ARMCC_VERSION/1000000)
+  # define COMPILER_VERSION_MINOR DEC(__ARMCC_VERSION/10000 % 100)
+  # define COMPILER_VERSION_PATCH DEC(__ARMCC_VERSION     % 10000)
+#else
+  /* __ARMCC_VERSION = VRPPPP */
+  # define COMPILER_VERSION_MAJOR DEC(__ARMCC_VERSION/100000)
+  # define COMPILER_VERSION_MINOR DEC(__ARMCC_VERSION/10000 % 10)
+  # define COMPILER_VERSION_PATCH DEC(__ARMCC_VERSION    % 10000)
+#endif
+
+
+#elif defined(__clang__) && defined(__apple_build_version__)
+# define COMPILER_ID "AppleClang"
+# if defined(_MSC_VER)
+#  define SIMULATE_ID "MSVC"
+# endif
+# define COMPILER_VERSION_MAJOR DEC(__clang_major__)
+# define COMPILER_VERSION_MINOR DEC(__clang_minor__)
+# define COMPILER_VERSION_PATCH DEC(__clang_patchlevel__)
+# if defined(_MSC_VER)
+   /* _MSC_VER = VVRR */
+#  define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
+#  define SIMULATE_VERSION_MINOR DEC(_MSC_VER % 100)
+# endif
+# define COMPILER_VERSION_TWEAK DEC(__apple_build_version__)
+
+#elif defined(__clang__) && defined(__ARMCOMPILER_VERSION)
+# define COMPILER_ID "ARMClang"
+  # define COMPILER_VERSION_MAJOR DEC(__ARMCOMPILER_VERSION/1000000)
+  # define COMPILER_VERSION_MINOR DEC(__ARMCOMPILER_VERSION/10000 % 100)
+  # define COMPILER_VERSION_PATCH DEC(__ARMCOMPILER_VERSION/100   % 100)
+# define COMPILER_VERSION_INTERNAL DEC(__ARMCOMPILER_VERSION)
+
+#elif defined(__clang__) && defined(__ti__)
+# define COMPILER_ID "TIClang"
+  # define COMPILER_VERSION_MAJOR DEC(__ti_major__)
+  # define COMPILER_VERSION_MINOR DEC(__ti_minor__)
+  # define COMPILER_VERSION_PATCH DEC(__ti_patchlevel__)
+# define COMPILER_VERSION_INTERNAL DEC(__ti_version__)
+
+#elif defined(__clang__)
+# define COMPILER_ID "Clang"
+# if defined(_MSC_VER)
+#  define SIMULATE_ID "MSVC"
+# endif
+# define COMPILER_VERSION_MAJOR DEC(__clang_major__)
+# define COMPILER_VERSION_MINOR DEC(__clang_minor__)
+# define COMPILER_VERSION_PATCH DEC(__clang_patchlevel__)
+# if defined(_MSC_VER)
+   /* _MSC_VER = VVRR */
+#  define SIMULATE_VERSION_MAJOR DEC(_MSC_VER / 100)
+#  define SIMULATE_VERSION_MINOR DEC(_MSC_VER % 100)
+# endif
+
+#elif defined(__LCC__) && (defined(__GNUC__) || defined(__GNUG__) || defined(__MCST__))
+# define COMPILER_ID "LCC"
+# define COMPILER_VERSION_MAJOR DEC(__LCC__ / 100)
+# define COMPILER_VERSION_MINOR DEC(__LCC__ % 100)
+# if defined(__LCC_MINOR__)
+#  define COMPILER_VERSION_PATCH DEC(__LCC_MINOR__)
+# endif
+# if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#  define SIMULATE_ID "GNU"
+#  define SIMULATE_VERSION_MAJOR DEC(__GNUC__)
+#  define SIMULATE_VERSION_MINOR DEC(__GNUC_MINOR__)
+#  if defined(__GNUC_PATCHLEVEL__)
+#   define SIMULATE_VERSION_PATCH DEC(__GNUC_PATCHLEVEL__)
+#  endif
+# endif
+
+#elif defined(__GNUC__) || defined(__GNUG__)
+# define COMPILER_ID "GNU"
+# if defined(__GNUC__)
+#  define COMPILER_VERSION_MAJOR DEC(__GNUC__)
+# else
+#  define COMPILER_VERSION_MAJOR DEC(__GNUG__)
+# endif
+# if defined(__GNUC_MINOR__)
+#  define COMPILER_VERSION_MINOR DEC(__GNUC_MINOR__)
+# endif
+# if defined(__GNUC_PATCHLEVEL__)
+#  define COMPILER_VERSION_PATCH DEC(__GNUC_PATCHLEVEL__)
+# endif
+
+#elif defined(_MSC_VER)
+# define COMPILER_ID "MSVC"
+  /* _MSC_VER = VVRR */
+# define COMPILER_VERSION_MAJOR DEC(_MSC_VER / 100)
+# define COMPILER_VERSION_MINOR DEC(_MSC_VER % 100)
+# if defined(_MSC_FULL_VER)
+#  if _MSC_VER >= 1400
+    /* _MSC_FULL_VER = VVRRPPPPP */
+#   define COMPILER_VERSION_PATCH DEC(_MSC_FULL_VER % 100000)
+#  else
+    /* _MSC_FULL_VER = VVRRPPPP */
+#   define COMPILER_VERSION_PATCH DEC(_MSC_FULL_VER % 10000)
+#  endif
+# endif
+# if defined(_MSC_BUILD)
+#  define COMPILER_VERSION_TWEAK DEC(_MSC_BUILD)
+# endif
+
+#elif defined(_ADI_COMPILER)
+# define COMPILER_ID "ADSP"
+#if defined(__VERSIONNUM__)
+  /* __VERSIONNUM__ = 0xVVRRPPTT */
+#  define COMPILER_VERSION_MAJOR DEC(__VERSIONNUM__ >> 24 & 0xFF)
+#  define COMPILER_VERSION_MINOR DEC(__VERSIONNUM__ >> 16 & 0xFF)
+#  define COMPILER_VERSION_PATCH DEC(__VERSIONNUM__ >> 8 & 0xFF)
+#  define COMPILER_VERSION_TWEAK DEC(__VERSIONNUM__ & 0xFF)
+#endif
+
+#elif defined(__IAR_SYSTEMS_ICC__) || defined(__IAR_SYSTEMS_ICC)
+# define COMPILER_ID "IAR"
+# if defined(__VER__) && defined(__ICCARM__)
+#  define COMPILER_VERSION_MAJOR DEC((__VER__) / 1000000)
+#  define COMPILER_VERSION_MINOR DEC(((__VER__) / 1000) % 1000)
+#  define COMPILER_VERSION_PATCH DEC((__VER__) % 1000)
+#  define COMPILER_VERSION_INTERNAL DEC(__IAR_SYSTEMS_ICC__)
+# elif defined(__VER__) && (defined(__ICCAVR__) || defined(__ICCRX__) || defined(__ICCRH850__) || defined(__ICCRL78__) || defined(__ICC430__) || defined(__ICCRISCV__) || defined(__ICCV850__) || defined(__ICC8051__) || defined(__ICCSTM8__))
+#  define COMPILER_VERSION_MAJOR DEC((__VER__) / 100)
+#  define COMPILER_VERSION_MINOR DEC((__VER__) - (((__VER__) / 100)*100))
+#  define COMPILER_VERSION_PATCH DEC(__SUBVERSION__)
+#  define COMPILER_VERSION_INTERNAL DEC(__IAR_SYSTEMS_ICC__)
+# endif
+
+
+/* These compilers are either not known or too old to define an
+  identification macro.  Try to identify the platform and guess that
+  it is the native compiler.  */
+#elif defined(__hpux) || defined(__hpua)
+# define COMPILER_ID "HP"
+
+#else /* unknown compiler */
+# define COMPILER_ID ""
+#endif
+
+/* Construct the string literal in pieces to prevent the source from
+   getting matched.  Store it in a pointer rather than an array
+   because some compilers will just produce instructions to fill the
+   array rather than assigning a pointer to a static array.  */
+char const* info_compiler = "INFO" ":" "compiler[" COMPILER_ID "]";
+#ifdef SIMULATE_ID
+char const* info_simulate = "INFO" ":" "simulate[" SIMULATE_ID "]";
+#endif
+
+#ifdef __QNXNTO__
+char const* qnxnto = "INFO" ":" "qnxnto[]";
+#endif
+
+#if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
+char const *info_cray = "INFO" ":" "compiler_wrapper[CrayPrgEnv]";
+#endif
+
+#define STRINGIFY_HELPER(X) #X
+#define STRINGIFY(X) STRINGIFY_HELPER(X)
+
+/* Identify known platforms by name.  */
+#if defined(__linux) || defined(__linux__) || defined(linux)
+# define PLATFORM_ID "Linux"
+
+#elif defined(__MSYS__)
+# define PLATFORM_ID "MSYS"
+
+#elif defined(__CYGWIN__)
+# define PLATFORM_ID "Cygwin"
+
+#elif defined(__MINGW32__)
+# define PLATFORM_ID "MinGW"
+
+#elif defined(__APPLE__)
+# define PLATFORM_ID "Darwin"
+
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+# define PLATFORM_ID "Windows"
+
+#elif defined(__FreeBSD__) || defined(__FreeBSD)
+# define PLATFORM_ID "FreeBSD"
+
+#elif defined(__NetBSD__) || defined(__NetBSD)
+# define PLATFORM_ID "NetBSD"
+
+#elif defined(__OpenBSD__) || defined(__OPENBSD)
+# define PLATFORM_ID "OpenBSD"
+
+#elif defined(__sun) || defined(sun)
+# define PLATFORM_ID "SunOS"
+
+#elif defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__)
+# define PLATFORM_ID "AIX"
+
+#elif defined(__hpux) || defined(__hpux__)
+# define PLATFORM_ID "HP-UX"
+
+#elif defined(__HAIKU__)
+# define PLATFORM_ID "Haiku"
+
+#elif defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+# define PLATFORM_ID "BeOS"
+
+#elif defined(__QNX__) || defined(__QNXNTO__)
+# define PLATFORM_ID "QNX"
+
+#elif defined(__tru64) || defined(_tru64) || defined(__TRU64__)
+# define PLATFORM_ID "Tru64"
+
+#elif defined(__riscos) || defined(__riscos__)
+# define PLATFORM_ID "RISCos"
+
+#elif defined(__sinix) || defined(__sinix__) || defined(__SINIX__)
+# define PLATFORM_ID "SINIX"
+
+#elif defined(__UNIX_SV__)
+# define PLATFORM_ID "UNIX_SV"
+
+#elif defined(__bsdos__)
+# define PLATFORM_ID "BSDOS"
+
+#elif defined(_MPRAS) || defined(MPRAS)
+# define PLATFORM_ID "MP-RAS"
+
+#elif defined(__osf) || defined(__osf__)
+# define PLATFORM_ID "OSF1"
+
+#elif defined(_SCO_SV) || defined(SCO_SV) || defined(sco_sv)
+# define PLATFORM_ID "SCO_SV"
+
+#elif defined(__ultrix) || defined(__ultrix__) || defined(_ULTRIX)
+# define PLATFORM_ID "ULTRIX"
+
+#elif defined(__XENIX__) || defined(_XENIX) || defined(XENIX)
+# define PLATFORM_ID "Xenix"
+
+#elif defined(__WATCOMC__)
+# if defined(__LINUX__)
+#  define PLATFORM_ID "Linux"
+
+# elif defined(__DOS__)
+#  define PLATFORM_ID "DOS"
+
+# elif defined(__OS2__)
+#  define PLATFORM_ID "OS2"
+
+# elif defined(__WINDOWS__)
+#  define PLATFORM_ID "Windows3x"
+
+# elif defined(__VXWORKS__)
+#  define PLATFORM_ID "VxWorks"
+
+# else /* unknown platform */
+#  define PLATFORM_ID
+# endif
+
+#elif defined(__INTEGRITY)
+# if defined(INT_178B)
+#  define PLATFORM_ID "Integrity178"
+
+# else /* regular Integrity */
+#  define PLATFORM_ID "Integrity"
+# endif
+
+# elif defined(_ADI_COMPILER)
+#  define PLATFORM_ID "ADSP"
+
+#else /* unknown platform */
+# define PLATFORM_ID
+
+#endif
+
+/* For windows compilers MSVC and Intel we can determine
+   the architecture of the compiler being used.  This is because
+   the compilers do not have flags that can change the architecture,
+   but rather depend on which compiler is being used
+*/
+#if defined(_WIN32) && defined(_MSC_VER)
+# if defined(_M_IA64)
+#  define ARCHITECTURE_ID "IA64"
+
+# elif defined(_M_ARM64EC)
+#  define ARCHITECTURE_ID "ARM64EC"
+
+# elif defined(_M_X64) || defined(_M_AMD64)
+#  define ARCHITECTURE_ID "x64"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# elif defined(_M_ARM64)
+#  define ARCHITECTURE_ID "ARM64"
+
+# elif defined(_M_ARM)
+#  if _M_ARM == 4
+#   define ARCHITECTURE_ID "ARMV4I"
+#  elif _M_ARM == 5
+#   define ARCHITECTURE_ID "ARMV5I"
+#  else
+#   define ARCHITECTURE_ID "ARMV" STRINGIFY(_M_ARM)
+#  endif
+
+# elif defined(_M_MIPS)
+#  define ARCHITECTURE_ID "MIPS"
+
+# elif defined(_M_SH)
+#  define ARCHITECTURE_ID "SHx"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__WATCOMC__)
+# if defined(_M_I86)
+#  define ARCHITECTURE_ID "I86"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__IAR_SYSTEMS_ICC__) || defined(__IAR_SYSTEMS_ICC)
+# if defined(__ICCARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__ICCRX__)
+#  define ARCHITECTURE_ID "RX"
+
+# elif defined(__ICCRH850__)
+#  define ARCHITECTURE_ID "RH850"
+
+# elif defined(__ICCRL78__)
+#  define ARCHITECTURE_ID "RL78"
+
+# elif defined(__ICCRISCV__)
+#  define ARCHITECTURE_ID "RISCV"
+
+# elif defined(__ICCAVR__)
+#  define ARCHITECTURE_ID "AVR"
+
+# elif defined(__ICC430__)
+#  define ARCHITECTURE_ID "MSP430"
+
+# elif defined(__ICCV850__)
+#  define ARCHITECTURE_ID "V850"
+
+# elif defined(__ICC8051__)
+#  define ARCHITECTURE_ID "8051"
+
+# elif defined(__ICCSTM8__)
+#  define ARCHITECTURE_ID "STM8"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__ghs__)
+# if defined(__PPC64__)
+#  define ARCHITECTURE_ID "PPC64"
+
+# elif defined(__ppc__)
+#  define ARCHITECTURE_ID "PPC"
+
+# elif defined(__ARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__x86_64__)
+#  define ARCHITECTURE_ID "x64"
+
+# elif defined(__i386__)
+#  define ARCHITECTURE_ID "X86"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__clang__) && defined(__ti__)
+# if defined(__ARM_ARCH)
+#  define ARCHITECTURE_ID "Arm"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__TI_COMPILER_VERSION__)
+# if defined(__TI_ARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__MSP430__)
+#  define ARCHITECTURE_ID "MSP430"
+
+# elif defined(__TMS320C28XX__)
+#  define ARCHITECTURE_ID "TMS320C28x"
+
+# elif defined(__TMS320C6X__) || defined(_TMS320C6X)
+#  define ARCHITECTURE_ID "TMS320C6x"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+# elif defined(__ADSPSHARC__)
+#  define ARCHITECTURE_ID "SHARC"
+
+# elif defined(__ADSPBLACKFIN__)
+#  define ARCHITECTURE_ID "Blackfin"
+
+#elif defined(__TASKING__)
+
+# if defined(__CTC__) || defined(__CPTC__)
+#  define ARCHITECTURE_ID "TriCore"
+
+# elif defined(__CMCS__)
+#  define ARCHITECTURE_ID "MCS"
+
+# elif defined(__CARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__CARC__)
+#  define ARCHITECTURE_ID "ARC"
+
+# elif defined(__C51__)
+#  define ARCHITECTURE_ID "8051"
+
+# elif defined(__CPCP__)
+#  define ARCHITECTURE_ID "PCP"
+
+# else
+#  define ARCHITECTURE_ID ""
+# endif
+
+#else
+#  define ARCHITECTURE_ID
+#endif
+
+/* Convert integer to decimal digit literals.  */
+#define DEC(n)                   \
+  ('0' + (((n) / 10000000)%10)), \
+  ('0' + (((n) / 1000000)%10)),  \
+  ('0' + (((n) / 100000)%10)),   \
+  ('0' + (((n) / 10000)%10)),    \
+  ('0' + (((n) / 1000)%10)),     \
+  ('0' + (((n) / 100)%10)),      \
+  ('0' + (((n) / 10)%10)),       \
+  ('0' +  ((n) % 10))
+
+/* Convert integer to hex digit literals.  */
+#define HEX(n)             \
+  ('0' + ((n)>>28 & 0xF)), \
+  ('0' + ((n)>>24 & 0xF)), \
+  ('0' + ((n)>>20 & 0xF)), \
+  ('0' + ((n)>>16 & 0xF)), \
+  ('0' + ((n)>>12 & 0xF)), \
+  ('0' + ((n)>>8  & 0xF)), \
+  ('0' + ((n)>>4  & 0xF)), \
+  ('0' + ((n)     & 0xF))
+
+/* Construct a string literal encoding the version number. */
+#ifdef COMPILER_VERSION
+char const* info_version = "INFO" ":" "compiler_version[" COMPILER_VERSION "]";
+
+/* Construct a string literal encoding the version number components. */
+#elif defined(COMPILER_VERSION_MAJOR)
+char const info_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
+  COMPILER_VERSION_MAJOR,
+# ifdef COMPILER_VERSION_MINOR
+  '.', COMPILER_VERSION_MINOR,
+#  ifdef COMPILER_VERSION_PATCH
+   '.', COMPILER_VERSION_PATCH,
+#   ifdef COMPILER_VERSION_TWEAK
+    '.', COMPILER_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct a string literal encoding the internal version number. */
+#ifdef COMPILER_VERSION_INTERNAL
+char const info_version_internal[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
+  'i','n','t','e','r','n','a','l','[',
+  COMPILER_VERSION_INTERNAL,']','\0'};
+#elif defined(COMPILER_VERSION_INTERNAL_STR)
+char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";
+#endif
+
+/* Construct a string literal encoding the version number components. */
+#ifdef SIMULATE_VERSION_MAJOR
+char const info_simulate_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  's','i','m','u','l','a','t','e','_','v','e','r','s','i','o','n','[',
+  SIMULATE_VERSION_MAJOR,
+# ifdef SIMULATE_VERSION_MINOR
+  '.', SIMULATE_VERSION_MINOR,
+#  ifdef SIMULATE_VERSION_PATCH
+   '.', SIMULATE_VERSION_PATCH,
+#   ifdef SIMULATE_VERSION_TWEAK
+    '.', SIMULATE_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct the string literal in pieces to prevent the source from
+   getting matched.  Store it in a pointer rather than an array
+   because some compilers will just produce instructions to fill the
+   array rather than assigning a pointer to a static array.  */
+char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";
+char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
+
+
+
+#define CXX_STD_98 199711L
+#define CXX_STD_11 201103L
+#define CXX_STD_14 201402L
+#define CXX_STD_17 201703L
+#define CXX_STD_20 202002L
+#define CXX_STD_23 202302L
+
+#if defined(__INTEL_COMPILER) && defined(_MSVC_LANG)
+#  if _MSVC_LANG > CXX_STD_17
+#    define CXX_STD _MSVC_LANG
+#  elif _MSVC_LANG == CXX_STD_17 && defined(__cpp_aggregate_paren_init)
+#    define CXX_STD CXX_STD_20
+#  elif _MSVC_LANG > CXX_STD_14 && __cplusplus > CXX_STD_17
+#    define CXX_STD CXX_STD_20
+#  elif _MSVC_LANG > CXX_STD_14
+#    define CXX_STD CXX_STD_17
+#  elif defined(__INTEL_CXX11_MODE__) && defined(__cpp_aggregate_nsdmi)
+#    define CXX_STD CXX_STD_14
+#  elif defined(__INTEL_CXX11_MODE__)
+#    define CXX_STD CXX_STD_11
+#  else
+#    define CXX_STD CXX_STD_98
+#  endif
+#elif defined(_MSC_VER) && defined(_MSVC_LANG)
+#  if _MSVC_LANG > __cplusplus
+#    define CXX_STD _MSVC_LANG
+#  else
+#    define CXX_STD __cplusplus
+#  endif
+#elif defined(__NVCOMPILER)
+#  if __cplusplus == CXX_STD_17 && defined(__cpp_aggregate_paren_init)
+#    define CXX_STD CXX_STD_20
+#  else
+#    define CXX_STD __cplusplus
+#  endif
+#elif defined(__INTEL_COMPILER) || defined(__PGI)
+#  if __cplusplus == CXX_STD_11 && defined(__cpp_namespace_attributes)
+#    define CXX_STD CXX_STD_17
+#  elif __cplusplus == CXX_STD_11 && defined(__cpp_aggregate_nsdmi)
+#    define CXX_STD CXX_STD_14
+#  else
+#    define CXX_STD __cplusplus
+#  endif
+#elif (defined(__IBMCPP__) || defined(__ibmxl__)) && defined(__linux__)
+#  if __cplusplus == CXX_STD_11 && defined(__cpp_aggregate_nsdmi)
+#    define CXX_STD CXX_STD_14
+#  else
+#    define CXX_STD __cplusplus
+#  endif
+#elif __cplusplus == 1 && defined(__GXX_EXPERIMENTAL_CXX0X__)
+#  define CXX_STD CXX_STD_11
+#else
+#  define CXX_STD __cplusplus
+#endif
+
+const char* info_language_standard_default = "INFO" ":" "standard_default["
+#if CXX_STD > CXX_STD_23
+  "26"
+#elif CXX_STD > CXX_STD_20
+  "23"
+#elif CXX_STD > CXX_STD_17
+  "20"
+#elif CXX_STD > CXX_STD_14
+  "17"
+#elif CXX_STD > CXX_STD_11
+  "14"
+#elif CXX_STD >= CXX_STD_11
+  "11"
+#else
+  "98"
+#endif
+"]";
+
+const char* info_language_extensions_default = "INFO" ":" "extensions_default["
+#if (defined(__clang__) || defined(__GNUC__) || defined(__xlC__) ||           \
+     defined(__TI_COMPILER_VERSION__)) &&                                     \
+  !defined(__STRICT_ANSI__)
+  "ON"
+#else
+  "OFF"
+#endif
+"]";
+
+/*--------------------------------------------------------------------------*/
+
+int main(int argc, char* argv[])
+{
+  int require = 0;
+  require += info_compiler[argc];
+  require += info_platform[argc];
+  require += info_arch[argc];
+#ifdef COMPILER_VERSION_MAJOR
+  require += info_version[argc];
+#endif
+#ifdef COMPILER_VERSION_INTERNAL
+  require += info_version_internal[argc];
+#endif
+#ifdef SIMULATE_ID
+  require += info_simulate[argc];
+#endif
+#ifdef SIMULATE_VERSION_MAJOR
+  require += info_simulate_version[argc];
+#endif
+#if defined(__CRAYXT_COMPUTE_LINUX_TARGET)
+  require += info_cray[argc];
+#endif
+  require += info_language_standard_default[argc];
+  require += info_language_extensions_default[argc];
+  (void)argv;
+  return require;
+}
+
+====================
+FILE: Ally.cpp
+====================
+#include "Ally.h"
+#include "Game.h"
+#include <cmath>
+
+Ally::Ally(int health, int damage, int x, int y) : Creature(health, damage, x, y) {}
+
+void Ally::update(Game& game) {
+    const auto& enemies = game.getEnemies();
+    if (enemies.empty()) {
+        return;
+    }
+
+    const Enemy* target = nullptr;
+    int min_dist_sq = 10000;
+    for (const auto& enemy : enemies) {
+        int dist_sq = (enemy.getX() - x_) * (enemy.getX() - x_) + (enemy.getY() - y_) * (enemy.getY() - y_);
+        if (dist_sq < min_dist_sq) {
+            min_dist_sq = dist_sq;
+            target = &enemy;
+        }
+    }
+
+    if (!target) return;
+
+    int dx = target->getX() - x_;
+    int dy = target->getY() - y_;
+
+    if (std::abs(dx) <= 1 && std::abs(dy) <= 1) {
+        game.damageEntityAt(target->getX(), target->getY(), damage_);
+        return;
+    }
+
+    int move_dx = (dx > 0) ? 1 : (dx < 0) ? -1 : 0;
+    int move_dy = (dy > 0) ? 1 : (dy < 0) ? -1 : 0;
+
+    int next_x = x_ + move_dx;
+    int next_y = y_ + move_dy;
+
+    if (game.canPlaceEntityAt(next_x, next_y)) {
+        setPosition(next_x, next_y);
+    }
+}
+
+====================
+FILE: Ally.h
+====================
+#ifndef GAMELB1_ALLY_H
+#define GAMELB1_ALLY_H
+
+#include "Creature.h"
+
+class Game;
+
+class Ally : public Creature {
+public:
+    Ally(int health, int damage, int x, int y);
+
+
+    void update(Game& game);
+};
+
+#endif //GAMELB1_ALLY_H
+
+====================
+FILE: AoESpell.cpp
+====================
+#include "AoESpell.h"
+#include "Game.h"
+#include <cmath>
+
+AoESpell::AoESpell(int damage, int cast_radius, int area_radius)
+        : damage_(damage), cast_radius_(cast_radius), area_radius_(area_radius) {}
+
+void AoESpell::apply(Game& game, int target_x, int target_y) {
+    int active_area_radius = area_radius_;
+    int boosts = game.getPlayer().consumeBoostCharges();
+    if (boosts > 0) {
+        // Каждый заряд усиления увеличивает радиус области на 1 (3x3 -> 5x5 -> 7x7)
+        active_area_radius += boosts;
+    }
+
+    int player_x = game.getPlayer().getX();
+    int player_y = game.getPlayer().getY();
+    if (std::abs(player_x - target_x) > cast_radius_ || std::abs(player_y - target_y) > cast_radius_) {
+        game.setLastMessage("Target is out of range.");
+        return;
+    }
+
+    std::string message = "Meteor strikes the area!";
+    if (boosts > 0) {
+        message += " (Boosted area!)";
+    }
+    game.setLastMessage(message);
+
+    int start_x = target_x - active_area_radius;
+    int end_x = target_x + active_area_radius;
+    int start_y = target_y - active_area_radius;
+    int end_y = target_y + active_area_radius;
+
+    int hits = 0;
+    for (int y = start_y; y <= end_y; ++y) {
+        for (int x = start_x; x <= end_x; ++x) {
+            if (game.damageEntityAt(x, y, damage_)) {
+                hits++;
+            }
+        }
+    }
+
+    if(hits > 0) {
+        game.setLastMessage(game.getLastMessage() + " Hit " + std::to_string(hits) + " targets.");
+    }
+
+    game.endPlayerTurn();
+}
+
+std::unique_ptr<ISpell> AoESpell::clone() const {
+    return std::make_unique<AoESpell>(*this);
+}
+
+std::string AoESpell::getName() const { return "Meteor"; }
+
+std::string AoESpell::getDescription() const {
+    int side_length = area_radius_ * 2 + 1;
+    return "Deals " + std::to_string(damage_) + " dmg in a " + std::to_string(side_length) + "x" + std::to_string(side_length) + " area. Radius: " + std::to_string(cast_radius_);
+}
+
+int AoESpell::getTypeId() const {
+    return 1;
+}
+
+====================
+FILE: AoESpell.h
+====================
+#ifndef GAMELB1_AOESPELL_H
+#define GAMELB1_AOESPELL_H
+
+#include "ISpell.h"
+
+class AoESpell : public ISpell {
+public:
+    AoESpell(int damage, int cast_radius, int area_radius);
+
+    void apply(Game& game, int target_x, int target_y) override;
+    std::unique_ptr<ISpell> clone() const override;
+    std::string getName() const override;
+    std::string getDescription() const override;
+
+    int getTypeId() const override;
+
+private:
+    int damage_;
+    int cast_radius_;
+    int area_radius_;
+};
+
+#endif //GAMELB1_AOESPELL_H
+
+====================
+FILE: BoostSpell.cpp
+====================
+#include "BoostSpell.h"
+#include "Game.h"
+
+BoostSpell::BoostSpell() = default;
+
+void BoostSpell::apply(Game& game, int target_x, int target_y) {
+
+    int boosts = game.getPlayer().consumeBoostCharges();
+    game.getPlayer().addBoostCharge(boosts + 1);
+
+    game.setLastMessage("Spell power is gathering... Next spell will be boosted!");
+    game.endPlayerTurn();
+}
+
+std::unique_ptr<ISpell> BoostSpell::clone() const {
+    return std::make_unique<BoostSpell>(*this);
+}
+
+std::string BoostSpell::getName() const { return "Empower"; }
+std::string BoostSpell::getDescription() const {
+    return "Boosts the next spell you cast. Stacks.";
+}
+
+int BoostSpell::getTypeId() const {
+    return 4;
+}
+
+====================
+FILE: BoostSpell.h
+====================
+#ifndef GAMELB1_BOOSTSPELL_H
+#define GAMELB1_BOOSTSPELL_H
+
+#include "ISpell.h"
+
+class BoostSpell : public ISpell {
+public:
+    BoostSpell();
+
+    void apply(Game& game, int target_x, int target_y) override;
+    std::unique_ptr<ISpell> clone() const override;
+    std::string getName() const override;
+    std::string getDescription() const override;
+
+    int getTypeId() const override;
+};
+
+#endif //GAMELB1_BOOSTSPELL_H
+
+====================
+FILE: Cell.cpp
+====================
+#include "Cell.h"
+
+Cell::Cell() : type_(CellType::kEmpty) {}
+
+void Cell::setType(CellType type) {
+    type_ = type;
+}
+
+CellType Cell::getType() const {
+    return type_;
+}
+
+====================
+FILE: Cell.h
+====================
+#ifndef GAMELB1_CELL_H
+#define GAMELB1_CELL_H
+
+enum class CellType {
+    kEmpty,
+    kObstacle,
+    kPlayer,
+    kEnemy,
+    kBuilding,
+    kSlowingTrap
+};
+
+class Cell {
+public:
+    Cell();
+
+    void setType(CellType type);
+    CellType getType() const;
+
+private:
+    CellType type_;
+};
+
+#endif //GAMELB1_CELL_H
+
+====================
+FILE: Command.h
+====================
+#ifndef GAMELB1_COMMAND_H
+#define GAMELB1_COMMAND_H
+
+#include "Game.h"
+#include <iostream>
+
+class Command {
+public:
+    virtual ~Command() = default;
+    virtual void execute(Game& game) = 0;
+};
+
+
+class MoveCommand : public Command {
+    char direction_;
+public:
+    explicit MoveCommand(char dir) : direction_(dir) {}
+    void execute(Game& game) override {
+        // ИСПРАВЛЕНИЕ: Проверяем, целимся мы или ходим
+        if (game.getGameState() == GameState::Aiming) {
+            game.processPlayerAim(direction_);
+        } else {
+            game.processPlayerMove(direction_);
+        }
+    }
+};
+
+class ActionCommand : public Command {
+    char action_;
+public:
+    explicit ActionCommand(char act) : action_(act) {}
+    void execute(Game& game) override {
+        game.processPlayerAction(action_);
+    }
+};
+
+class SelectSpellCommand : public Command {
+    int index_;
+public:
+    explicit SelectSpellCommand(int index) : index_(index) {}
+    void execute(Game& game) override {
+        game.selectSpell(index_);
+    }
+};
+
+class SaveCommand : public Command {
+public:
+    void execute(Game& game) override {
+        game.saveGame("quicksave.txt");
+    }
+};
+
+class LoadCommand : public Command {
+public:
+    void execute(Game& game) override {
+        game.loadGame("quicksave.txt");
+    }
+};
+
+class NextLevelCommand : public Command {
+public:
+    void execute(Game& game) override {
+        game.tryNextLevel();
+    }
+};
+
+class RestartCommand : public Command {
+public:
+    void execute(Game& game) override {
+        if (game.getGameState() == GameState::GameOver || game.getGameState() == GameState::Victory) {
+            game.restartGame();
+        }
+    }
+};
+
+class UpgradeCommand : public Command {
+    int choice_;
+public:
+    explicit UpgradeCommand(int choice) : choice_(choice) {}
+    void execute(Game& game) override {
+        game.upgradePlayer(choice_);
+    }
+};
+
+class NoOpCommand : public Command {
+public:
+    void execute(Game& game) override {}
+};
+
+#endif //GAMELB1_COMMAND_H
+
+====================
+FILE: Creature.cpp
+====================
+#include "Creature.h"
+
+Creature::Creature(int health, int damage, int x, int y)
+        : Entity(x, y), health_(health), damage_(damage) {}
+
+bool Creature::isAlive() const {
+    return health_ > 0;
+}
+
+void Creature::takeDamage(int damage) {
+    health_ -= damage;
+    if (health_ < 0) {
+        health_ = 0;
+    }
+}
+
+int Creature::getHealth() const {
+    return health_;
+}
+
+int Creature::getDamage() const {
+    return damage_;
+}
+
+====================
+FILE: Creature.h
+====================
+#ifndef GAMELB1_CREATURE_H
+#define GAMELB1_CREATURE_H
+
+#include "Entity.h"
+
+class Creature : public Entity {
+public:
+    Creature(int health, int damage, int x, int y);
+
+    bool isAlive() const;
+    void takeDamage(int damage);
+    int getHealth() const;
+    virtual int getDamage() const;
+
+protected:
+    int health_;
+    int damage_;
+};
+
+#endif //GAMELB1_CREATURE_H
+
+====================
+FILE: DirectDamageSpell.cpp
+====================
+#include "DirectDamageSpell.h"
+#include "Game.h"
+#include <cmath>
+
+DirectDamageSpell::DirectDamageSpell(int damage, int radius) : damage_(damage), radius_(radius) {}
+
+void DirectDamageSpell::apply(Game& game, int target_x, int target_y) {
+    int active_radius = radius_;
+    int boosts = game.getPlayer().consumeBoostCharges();
+    if (boosts > 0) {
+        active_radius += boosts * 5; // Каждый заряд улучшения увеличивает радиус на 1
+    }
+
+    int player_x = game.getPlayer().getX();
+    int player_y = game.getPlayer().getY();
+    if (std::abs(player_x - target_x) > active_radius || std::abs(player_y - target_y) > active_radius) {
+        game.setLastMessage("Target is out of range.");
+        return;
+    }
+
+
+    if (game.damageEntityAt(target_x, target_y, damage_)) {
+        std::string message = "Fireball hits for " + std::to_string(damage_) + " damage!";
+        if (boosts > 0) {
+            message += " (Boosted radius!)";
+        }
+        game.setLastMessage(message);
+        game.endPlayerTurn();
+    } else {
+        game.setLastMessage("There is no valid target at that location.");
+    }
+}
+
+std::unique_ptr<ISpell> DirectDamageSpell::clone() const {
+    return std::make_unique<DirectDamageSpell>(*this);
+}
+
+std::string DirectDamageSpell::getName() const { return "Fireball"; }
+std::string DirectDamageSpell::getDescription() const {
+    return "Deals " + std::to_string(damage_) + " dmg to one target. Radius: " + std::to_string(radius_);
+}
+int& DirectDamageSpell::getRadius() { return radius_; }
+
+int DirectDamageSpell::getTypeId() const {
+    return 0;
+}
+
+====================
+FILE: DirectDamageSpell.h
+====================
+#ifndef GAMELB1_DIRECTDAMAGESPELL_H
+#define GAMELB1_DIRECTDAMAGESPELL_H
+
+#include "ISpell.h"
+
+class DirectDamageSpell : public ISpell {
+public:
+    DirectDamageSpell(int damage, int radius);
+
+    void apply(Game& game, int target_x, int target_y) override;
+    std::unique_ptr<ISpell> clone() const override;
+    std::string getName() const override;
+    std::string getDescription() const override;
+
+    int getTypeId() const override;
+
+    int& getRadius();
+
+private:
+    int damage_;
+    int radius_;
+};
+
+#endif //GAMELB1_DIRECTDAMAGESPELL_H
+
+====================
+FILE: Enemy.cpp
+====================
+#include "Enemy.h"
+
+Enemy::Enemy(int health, int damage, int x, int y)
+        : Creature(health, damage, x, y) {}
+
+
+====================
+FILE: Enemy.h
+====================
+#ifndef GAMELB1_ENEMY_H
+#define GAMELB1_ENEMY_H
+
+#include "Creature.h"
+
+class Enemy : public Creature {
+public:
+    Enemy(int health, int damage, int x, int y);
+};
+
+#endif //GAMELB1_ENEMY_H
+
+====================
+FILE: EnemyBuilding.cpp
+====================
+#include "EnemyBuilding.h"
+
+EnemyBuilding::EnemyBuilding(int x, int y, int spawn_interval)
+        : Entity(x, y),
+          spawn_interval_(spawn_interval),
+          spawn_timer_(spawn_interval) {}
+
+bool EnemyBuilding::update() {
+    if (spawn_timer_ > 0) {
+        --spawn_timer_;
+        return false;
+    }
+    spawn_timer_ = spawn_interval_;
+    return true;
+}
+
+====================
+FILE: EnemyBuilding.h
+====================
+#ifndef GAMELB1_ENEMYBUILDING_H
+#define GAMELB1_ENEMYBUILDING_H
+
+#include "Entity.h"
+
+class EnemyBuilding : public Entity {
+public:
+    EnemyBuilding(int x, int y, int spawn_interval);
+
+    bool update();
+
+
+private:
+    int spawn_interval_;
+    int spawn_timer_;
+};
+
+#endif //GAMELB1_ENEMYBUILDING_H
+
+====================
+FILE: EnemyTower.cpp
+====================
+#include "EnemyTower.h"
+#include "Game.h"
+#include <cmath>
+
+EnemyTower::EnemyTower(int health, int damage, int radius, int x, int y, int cooldown)
+        : Entity(x, y),
+          health_(health),
+          damage_(damage),
+          radius_(radius),
+          initial_cooldown_(cooldown),
+          current_cooldown_(0) {}
+
+void EnemyTower::update(Game& game) {
+    if (current_cooldown_ > 0) {
+        current_cooldown_--;
+        return;
+    }
+
+    const auto& player = game.getPlayer();
+    int dx = player.getX() - x_;
+    int dy = player.getY() - y_;
+
+    if (std::abs(dx) <= radius_ && std::abs(dy) <= radius_) {
+        // Игрок в радиусе атаки
+        game.damagePlayer(damage_);
+        game.setLastMessage(game.getLastMessage() + " An enemy tower shoots you!");
+        current_cooldown_ = initial_cooldown_;
+    }
+}
+
+void EnemyTower::takeDamage(int damage) {
+    health_ -= damage;
+    if (health_ < 0) {
+        health_ = 0;
+    }
+}
+
+bool EnemyTower::isDestroyed() const {
+    return health_ <= 0;
+}
+
+int EnemyTower::getHealth() const {
+    return health_;
+}
+
+====================
+FILE: EnemyTower.h
+====================
+#ifndef GAMELB1_ENEMYTOWER_H
+#define GAMELB1_ENEMYTOWER_H
+
+#include "Entity.h"
+
+class Game;
+
+class EnemyTower : public Entity {
+public:
+    EnemyTower(int health, int damage, int radius, int x, int y, int cooldown);
+
+    void update(Game& game);
+
+    void takeDamage(int damage);
+    bool isDestroyed() const;
+    int getHealth() const;
+
+private:
+    int health_;
+    int damage_;
+    int radius_;
+    int initial_cooldown_;
+    int current_cooldown_;
+};
+
+#endif //GAMELB1_ENEMYTOWER_H
+
+====================
+FILE: Entity.cpp
+====================
+#include "Entity.h"
+
+Entity::Entity(int x, int y) : x_(x), y_(y) {}
+
+int Entity::getX() const { return x_; }
+int Entity::getY() const { return y_; }
+
+void Entity::setPosition(int x, int y) {
+    x_ = x;
+    y_ = y;
+}
+
+====================
+FILE: Entity.h
+====================
+#ifndef GAMELB1_ENTITY_H
+#define GAMELB1_ENTITY_H
+
+class Entity {
+public:
+    Entity(int x, int y);
+    virtual ~Entity() = default;
+
+    int getX() const;
+    int getY() const;
+    void setPosition(int x, int y);
+
+protected:
+    int x_;
+    int y_;
+};
+
+#endif //GAMELB1_ENTITY_H
+
+====================
+FILE: Field.cpp
+====================
+#include "Field.h"
+#include <stdexcept>
+#include <random>
+
+Field::Field(int width, int height) : width_(width), height_(height) {
+    if (width < 10 || width > 25 || height < 10 || height > 25) {
+        throw std::invalid_argument("Field dimensions must be between 10x10 and 25x25.");
+    }
+    initialize();
+}
+
+void Field::initialize() {
+    grid_.assign(height_, std::vector<Cell>(width_));
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> distX(0, width_ - 1);
+    std::uniform_int_distribution<int> distY(0, height_ - 1);
+
+    int obstacle_count = (width_ * height_) / 10;
+    for (int i = 0; i < obstacle_count; ++i) {
+        int x, y;
+        do { x = distX(rng); y = distY(rng); } while (getCellType(x, y) != CellType::kEmpty);
+        setCellType(x, y, CellType::kObstacle);
+    }
+
+    int trap_count = (width_ * height_) / 20;
+    for (int i = 0; i < trap_count; ++i) {
+        int x, y;
+        do { x = distX(rng); y = distY(rng); } while (getCellType(x, y) != CellType::kEmpty);
+        setCellType(x, y, CellType::kSlowingTrap);
+    }
+}
+
+int Field::getWidth() const { return width_; }
+int Field::getHeight() const { return height_; }
+
+CellType Field::getCellType(int x, int y) const {
+    if (!isValidPosition(x, y)) return CellType::kObstacle;
+    return grid_[y][x].getType();
+}
+
+void Field::setCellType(int x, int y, CellType type) {
+    if (isValidPosition(x, y)) grid_[y][x].setType(type);
+}
+
+bool Field::isValidPosition(int x, int y) const {
+    return x >= 0 && x < width_ && y >= 0 && y < height_;
+}
+
+void Field::save(std::ostream& os) const {
+    os << width_ << " " << height_ << "\n";
+    for (const auto& row : grid_) {
+        for (const auto& cell : row) {
+            os << static_cast<int>(cell.getType()) << " ";
+        }
+        os << "\n";
+    }
+}
+
+void Field::load(std::istream& is) {
+    is >> width_ >> height_;
+    grid_.assign(height_, std::vector<Cell>(width_));
+
+    for (int y = 0; y < height_; ++y) {
+        for (int x = 0; x < width_; ++x) {
+            int typeVal;
+            is >> typeVal;
+            grid_[y][x].setType(static_cast<CellType>(typeVal));
+        }
+    }
+}
+
+====================
+FILE: Field.h
+====================
+#ifndef GAMELB1_FIELD_H
+#define GAMELB1_FIELD_H
+
+#include <vector>
+#include <iostream>
+#include "Cell.h"
+
+class Field {
+public:
+    Field(int width, int height);
+    Field() : width_(0), height_(0) {}
+    Field(const Field& other) = default;
+    Field& operator=(const Field& other) = default;
+
+    int getWidth() const;
+    int getHeight() const;
+
+    CellType getCellType(int x, int y) const;
+    void setCellType(int x, int y, CellType type);
+    bool isValidPosition(int x, int y) const;
+
+    void save(std::ostream& os) const;
+    void load(std::istream& is);
+
+private:
+    void initialize();
+
+    int width_;
+    int height_;
+    std::vector<std::vector<Cell>> grid_;
+};
+
+#endif //GAMELB1_FIELD_H
+
+====================
+FILE: Game.cpp
+====================
+#include "Game.h"
+#include "GameExceptions.h"
+#include <random>
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include "DirectDamageSpell.h"
+#include "AoESpell.h"
+#include "TrapSpell.h"
+#include "SummonSpell.h"
+#include "BoostSpell.h"
+
+Game::Game(int field_width, int field_height)
+        : field_(field_width, field_height),
+          player_(),
+          game_state_(GameState::PlayerTurn),
+          last_turn_message_("Game started. Level 1"),
+          current_level_(1) {
+    initializeLevel();
+}
+
+int Game::getCurrentLevel() const { return current_level_; }
+
+void Game::clearEntities() {
+    enemies_.clear();
+    buildings_.clear();
+    towers_.clear();
+    allies_.clear();
+    traps_.clear();
+}
+
+void Game::initializeLevel() {
+    clearEntities();
+
+    if (current_level_ > 1) {
+        int new_w = std::min(25, 15 + (current_level_ - 1) * 2);
+        int new_h = std::min(25, 15 + (current_level_ - 1) * 2);
+        field_ = Field(new_w, new_h);
+    }
+
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> distX(0, field_.getWidth() - 1);
+    std::uniform_int_distribution<int> distY(0, field_.getHeight() - 1);
+
+    int px, py;
+    do {
+        px = distX(rng);
+        py = distY(rng);
+    } while (field_.getCellType(px, py) != CellType::kEmpty);
+    player_.setPosition(px, py);
+
+
+    auto findEmptyCell = [&]() {
+        int x, y;
+        int attempts = 0;
+        bool occupied = true;
+
+        while (occupied && attempts < 5000) {
+            occupied = false;
+            x = distX(rng);
+            y = distY(rng);
+            attempts++;
+
+            if (field_.getCellType(x, y) != CellType::kEmpty) { occupied = true; continue; }
+            if (x == player_.getX() && y == player_.getY()) { occupied = true; continue; }
+
+            for (const auto& e : enemies_) { if (e.getX() == x && e.getY() == y) { occupied = true; break; } }
+            if (occupied) continue;
+
+            for (const auto& t : towers_) { if (t.getX() == x && t.getY() == y) { occupied = true; break; } }
+            if (occupied) continue;
+
+            for (const auto& b : buildings_) { if (b.getX() == x && b.getY() == y) { occupied = true; break; } }
+        }
+
+        if (occupied) return std::make_pair(0, 0);
+        return std::make_pair(x, y);
+    };
+
+    if (current_level_ == 1 && player_.getHand().getSpells().empty()) {
+        player_.getHand().addSpell(std::make_unique<DirectDamageSpell>(25, 5));
+        player_.getHand().addSpell(std::make_unique<AoESpell>(15 , 4, 1));
+    }
+    else if (current_level_ > 1) {
+        if (!player_.getHand().isFull()) {
+            addRandomSpell();
+            setLastMessage("New level reached! You received a bonus spell.");
+        }
+    }
+
+    int enemy_count = 0;
+    int tower_count = 0;
+    int building_count = 0;
+
+
+    int enemy_hp = 20;
+    int enemy_dmg = 5;
+    int tower_hp = 50;
+    int tower_dmg = 0;
+
+    if (current_level_ == 1) {
+        enemy_count = 2;
+        tower_count = 0;
+        building_count = 0;
+    }
+    else if (current_level_ == 2) {
+        enemy_count = 3;
+        enemy_hp = 30;
+        enemy_dmg = 10;
+        tower_count = 1;
+        tower_dmg = 5;
+        building_count = 0;
+    }
+    else if (current_level_ >= 3) {
+        enemy_count = 3;
+        enemy_hp = 30;
+        enemy_dmg = 10;
+        tower_count = 2;
+        tower_dmg = 5;
+        building_count = 1;
+    }
+
+    auto pos = std::make_pair(0,0);
+
+    for (int i = 0; i < enemy_count; ++i) {
+        pos = findEmptyCell();
+        enemies_.emplace_back(enemy_hp, enemy_dmg, pos.first, pos.second);
+    }
+
+    for (int i = 0; i < tower_count; ++i) {
+        pos = findEmptyCell();
+        towers_.emplace_back(tower_hp, tower_dmg, 4, pos.first, pos.second, 5);
+    }
+
+    for (int i = 0; i < building_count; ++i) {
+        pos = findEmptyCell();
+        int spawn_rate = 25;
+        buildings_.emplace_back(pos.first, pos.second, spawn_rate);
+    }
+
+    enemies_killed_since_last_spell_ = 0;
+
+    std::string msg = "Level " + std::to_string(current_level_) + " started! ";
+    msg += "E:" + std::to_string(enemy_count) + " T:" + std::to_string(tower_count) + " B:" + std::to_string(building_count);
+    setLastMessage(msg);
+}
+
+void Game::tryNextLevel() {
+    if (enemies_.empty() && towers_.empty() && buildings_.empty()) {
+        if (current_level_ >= 3) {
+            game_state_ = GameState::Victory;
+            setLastMessage("Victory! All levels completed.");
+        } else {
+            game_state_ = GameState::UpgradeMenu;
+            setLastMessage("Level complete! Choose an upgrade.");
+        }
+    } else {
+        setLastMessage("Destroy all enemies and structures first!");
+    }
+}
+
+void Game::upgradePlayer(int choice) {
+    if (game_state_ != GameState::UpgradeMenu) return;
+
+    int spells_count = player_.getHand().getSpells().size();
+    int to_remove = spells_count / 2;
+    for(int i = 0; i < to_remove; ++i) {
+        player_.getHand().removeRandomSpell();
+    }
+
+    if (current_level_ == 1) {
+        if (choice == 1) {
+            player_.setMaxHealth(130);
+            setLastMessage("Max HP set to 130! Health restored.");
+        } else {
+            player_.increaseDamage(10);
+            setLastMessage("Damage +10! Health restored.");
+        }
+    }
+    else if (current_level_ == 2) {
+        if (choice == 1) {
+            player_.setMaxHealth(190);
+            setLastMessage("Max HP set to 190! Health restored.");
+        } else {
+            player_.increaseDamage(5);
+            setLastMessage("Damage +5! Health restored.");
+        }
+    }
+
+    player_.heal();
+
+    if (to_remove > 0) {
+        setLastMessage(getLastMessage() + " | " + std::to_string(to_remove) + " spells decayed.");
+    }
+
+    current_level_++;
+    initializeLevel();
+    game_state_ = GameState::PlayerTurn;
+}
+
+void Game::giveSpellOnKill() {
+    enemies_killed_since_last_spell_++;
+    int threshold = (current_level_ == 1) ? 1 : 2;
+
+    if (enemies_killed_since_last_spell_ >= threshold) {
+        if (!player_.getHand().isFull()) {
+            addRandomSpell();
+            setLastMessage(getLastMessage() + " You earned a spell!");
+            enemies_killed_since_last_spell_ = 0;
+        }
+    }
+}
+
+void Game::restartGame() {
+    current_level_ = 1;
+    player_ = Player();
+    initializeLevel();
+    game_state_ = GameState::PlayerTurn;
+}
+
+void Game::saveGame(const std::string& filename) {
+    std::ofstream ofs(filename);
+    if (!ofs.is_open()) throw SaveFileException("Cannot open file: " + filename);
+
+    try {
+        ofs << "GAME_SAVE_V2\n";
+        ofs << current_level_ << "\n";
+
+        ofs << player_.getHealth() << " " << player_.getScore() << " "
+            << player_.getX() << " " << player_.getY() << " "
+            << player_.getBoostCharges() << "\n";
+        player_.getHand().save(ofs);
+
+        ofs << enemies_.size() << "\n";
+        for(const auto& e : enemies_) ofs << e.getHealth() << " " << e.getX() << " " << e.getY() << "\n";
+
+        ofs << towers_.size() << "\n";
+        for(const auto& t : towers_) ofs << t.getHealth() << " " << t.getX() << " " << t.getY() << "\n";
+
+        ofs << buildings_.size() << "\n";
+        for(const auto& b : buildings_) ofs << b.getX() << " " << b.getY() << "\n";
+
+        field_.save(ofs);
+
+        ofs << traps_.size() << "\n";
+        for(const auto& t : traps_) ofs << t.getDamage() << " " << t.getX() << " " << t.getY() << "\n";
+
+        ofs << allies_.size() << "\n";
+        for(const auto& a : allies_) ofs << a.getHealth() << " " << a.getX() << " " << a.getY() << "\n";
+
+        if (ofs.fail()) throw SaveFileException("Write failed");
+    } catch (const std::exception& e) {
+        throw SaveFileException(e.what());
+    }
+    setLastMessage("Game Saved.");
+}
+
+void Game::loadGame(const std::string& filename) {
+    std::ifstream ifs(filename);
+    if (!ifs.is_open()) throw LoadFileException("Cannot open file: " + filename);
+
+    try {
+        std::string header;
+        ifs >> header;
+        if (header != "GAME_SAVE_V2") throw CorruptedDataException("Incompatible save version");
+
+        ifs >> current_level_;
+
+        int hp, score, px, py, boosts;
+        if(!(ifs >> hp >> score >> px >> py >> boosts)) throw CorruptedDataException("Read stats error");
+
+        player_ = Player(hp, 20, 10, score, px, py);
+        player_.setBoostCharges(boosts);
+
+        if (current_level_ == 2) { player_.setMaxHealth(130); player_.increaseDamage(10); }
+        if (current_level_ >= 3) { player_.setMaxHealth(190); player_.increaseDamage(15); }
+
+        player_.getHand().load(ifs);
+
+        clearEntities();
+
+        size_t count;
+        ifs >> count;
+        for(size_t i=0; i<count; ++i) {
+            int ehp, ex, ey;
+            ifs >> ehp >> ex >> ey;
+            int dmg = (current_level_ == 1) ? 15 : (current_level_ == 2 ? 20 : 25);
+            enemies_.emplace_back(ehp, dmg, ex, ey);
+        }
+
+        ifs >> count;
+        for(size_t i=0; i<count; ++i) {
+            int thp, tx, ty;
+            ifs >> thp >> tx >> ty;
+            int tdmg = (current_level_ <= 1) ? 0 : (current_level_ == 2 ? 10 : 11);
+            towers_.emplace_back(thp, tdmg, 4, tx, ty, 5);
+        }
+
+        ifs >> count;
+        for(size_t i=0; i<count; ++i) {
+            int bx, by;
+            ifs >> bx >> by;
+            buildings_.emplace_back(bx, by, 30);
+        }
+
+        field_.load(ifs);
+
+        ifs >> count;
+        for(size_t i=0; i<count; ++i) {
+            int tdmg, tx, ty;
+            ifs >> tdmg >> tx >> ty;
+            traps_.emplace_back(tdmg, tx, ty);
+        }
+
+        ifs >> count;
+        for(size_t i=0; i<count; ++i) {
+            int ahp, ax, ay;
+            ifs >> ahp >> ax >> ay;
+            allies_.emplace_back(ahp, 10, ax, ay);
+        }
+
+        if(ifs.fail()) throw CorruptedDataException("Bad format");
+
+    } catch (const std::exception& e) {
+        throw LoadFileException(e.what());
+    }
+    setLastMessage("Game Loaded.");
+    game_state_ = GameState::PlayerTurn;
+}
+
+const std::vector<std::pair<int, int>>& Game::getLastShotPath() const {
+    return last_shot_path_;
+}
+
+bool Game::hasNewShotAnimation() const {
+    return has_new_shot_;
+}
+
+void Game::clearShotAnimation() {
+    has_new_shot_ = false;
+    last_shot_path_.clear();
+}
+
+void Game::processPlayerMove(char direction) {
+    setLastMessage("");
+    if (player_.isSlowed()) {
+        setLastMessage("You are slowed!");
+        player_.setSlowed(false);
+        endPlayerTurn();
+        return;
+    }
+
+    int next_x = player_.getX();
+    int next_y = player_.getY();
+    switch (direction) {
+        case 'w': --next_y; break;
+        case 's': ++next_y; break;
+        case 'a': --next_x; break;
+        case 'd': ++next_x; break;
+    }
+
+    if (!field_.isValidPosition(next_x, next_y) || field_.getCellType(next_x, next_y) == CellType::kObstacle) {
+        setLastMessage("Blocked.");
+        return;
+    }
+
+    auto enemy_it = std::find_if(enemies_.begin(), enemies_.end(),
+                                 [next_x, next_y](const Enemy& e) { return e.getX() == next_x && e.getY() == next_y; });
+    if (enemy_it != enemies_.end()) {
+        damageEntityAt(next_x, next_y, player_.getDamage());
+        setLastMessage("Hit enemy!");
+        endPlayerTurn();
+        return;
+    }
+
+    auto tower_it = std::find_if(towers_.begin(), towers_.end(),
+                                 [next_x, next_y](const EnemyTower& t) { return t.getX() == next_x && t.getY() == next_y; });
+    if (tower_it != towers_.end()) {
+        damageEntityAt(next_x, next_y, player_.getDamage());
+        setLastMessage("Hit tower!");
+        endPlayerTurn();
+        return;
+    }
+
+    auto build_it = std::find_if(buildings_.begin(), buildings_.end(),
+                                 [next_x, next_y](const EnemyBuilding& b) { return b.getX() == next_x && b.getY() == next_y; });
+    if (build_it != buildings_.end()) {
+        setLastMessage("Blocked by building.");
+        return;
+    }
+
+    if (!canPlaceEntityAt(next_x, next_y, true)) {
+        setLastMessage("Blocked by entity.");
+        return;
+    }
+
+    player_.setPosition(next_x, next_y);
+    if (field_.getCellType(next_x, next_y) == CellType::kSlowingTrap) {
+        player_.setSlowed(true);
+        setLastMessage("Stepped on trap! Slowed.");
+    }
+
+    endPlayerTurn();
+}
+
+void Game::processPlayerAction(char action) {
+    if (action == 'c') {
+        player_.switchCombatMode();
+        if (player_.getModeName() == "Ranged") {
+            setLastMessage("Switched mode: Ranged. Press 'F' to Aim!");
+        } else {
+            setLastMessage("Switched mode: Melee.");
+        }
+        endPlayerTurn();
+    } else if (action == 'f') {
+        if (player_.getModeName() == "Ranged") {
+            game_state_ = GameState::Aiming;
+            setLastMessage("Aiming (WASD to shoot)...");
+        } else {
+            setLastMessage("Ranged mode only!");
+        }
+    }
+}
+
+// --- ИЗМЕНЕННЫЙ МЕТОД (УБРАН endPlayerTurn в конце) ---
+void Game::processPlayerAim(char direction) {
+    int dx = 0, dy = 0;
+    switch (direction) {
+        case 'w': dy = -1; break; case 's': dy = 1; break;
+        case 'a': dx = -1; break; case 'd': dx = 1; break;
+    }
+
+    last_shot_path_.clear();
+    has_new_shot_ = true;
+
+    int currentX = player_.getX();
+    int currentY = player_.getY();
+
+    currentX += dx;
+    currentY += dy;
+
+    bool hit = false;
+    while (field_.isValidPosition(currentX, currentY)) {
+        last_shot_path_.push_back({currentX, currentY});
+
+        if (field_.getCellType(currentX, currentY) == CellType::kObstacle) {
+            setLastMessage("Hit obstacle.");
+            hit = true;
+            break;
+        }
+        if (damageEntityAt(currentX, currentY, player_.getDamage())) {
+            setLastMessage("Arrow hit target!");
+            hit = true;
+            break;
+        }
+        currentX += dx;
+        currentY += dy;
+    }
+    if (!hit) setLastMessage("Missed.");
+
+    // ВАЖНО: Мы здесь НЕ заканчиваем ход. Это сделает main.cpp после анимации.
+    game_state_ = GameState::PlayerTurn;
+}
+// --------------------------------------------------------
+
+void Game::selectSpell(int index) {
+    if (index >= 0 && index < player_.getHand().getSpells().size()) {
+        selected_spell_index_ = index;
+        game_state_ = GameState::SelectingSpellTarget;
+        setLastMessage("Target for: " + player_.getHand().getSpells()[index]->getName());
+    }
+}
+
+void Game::applySpell(int target_x, int target_y) {
+    if (game_state_ == GameState::SelectingSpellTarget && selected_spell_index_ != -1) {
+        player_.getHand().useSpell(selected_spell_index_, *this, target_x, target_y);
+        selected_spell_index_ = -1;
+        if (game_state_ == GameState::SelectingSpellTarget) game_state_ = GameState::PlayerTurn;
+    }
+}
+
+void Game::cancelSpellSelection() {
+    game_state_ = GameState::PlayerTurn;
+    selected_spell_index_ = -1;
+    setLastMessage("Cancelled.");
+}
+
+void Game::endPlayerTurn() {
+    game_state_ = GameState::PlayerTurn;
+    updateAfterPlayerTurn();
+}
+
+void Game::updateAfterPlayerTurn() {
+    updateAllies();
+    updateEnemies();
+    updateBuildings();
+    updateTowers();
+    checkTraps();
+    cleanupDestroyedEntities();
+
+    if (!player_.isAlive()) {
+        game_state_ = GameState::GameOver;
+    } else if (enemies_.empty() && towers_.empty() && buildings_.empty()) {
+        if (current_level_ >= 3) {
+            setLastMessage("Area cleared! Press 'N' to finish game!");
+        } else {
+            setLastMessage("Area cleared! Press 'N' for next level.");
+        }
+    }
+}
+
+void Game::updateEnemies() {
+    for (auto& enemy : enemies_) {
+        int dx = player_.getX() - enemy.getX();
+        int dy = player_.getY() - enemy.getY();
+
+        if (std::abs(dx) <= 1 && std::abs(dy) <= 1) {
+            damagePlayer(enemy.getDamage());
+            continue;
+        }
+        int move_dx = (dx > 0) ? 1 : (dx < 0) ? -1 : 0;
+        int move_dy = (dy > 0) ? 1 : (dy < 0) ? -1 : 0;
+        int next_x = enemy.getX() + move_dx;
+        int next_y = enemy.getY() + move_dy;
+        if (canPlaceEntityAt(next_x, next_y)) enemy.setPosition(next_x, next_y);
+    }
+}
+
+void Game::updateBuildings() {
+    for (auto& building : buildings_) {
+        if (building.update()) spawnEnemyNear(building.getX(), building.getY());
+    }
+}
+
+void Game::updateTowers() {
+    for (auto& tower : towers_) {
+        tower.update(*this);
+    }
+}
+
+void Game::updateAllies() {
+    for (auto& ally : allies_) {
+        ally.update(*this);
+    }
+}
+
+void Game::checkTraps() {
+    for (auto& enemy : enemies_) {
+        auto it = std::find_if(traps_.begin(), traps_.end(), [&](const Trap& t){ return t.getX()==enemy.getX() && t.getY()==enemy.getY(); });
+        if (it != traps_.end()) {
+            enemy.takeDamage(it->getDamage());
+            traps_.erase(it);
+        }
+    }
+}
+
+bool Game::damageEntityAt(int x, int y, int damage) {
+    auto e_it = std::find_if(enemies_.begin(), enemies_.end(), [x,y](const Enemy& e){ return e.getX()==x && e.getY()==y; });
+    if (e_it != enemies_.end()) {
+        e_it->takeDamage(damage);
+        if (!e_it->isAlive()) {
+            player_.addScore(10);
+            giveSpellOnKill();
+        }
+        return true;
+    }
+    auto t_it = std::find_if(towers_.begin(), towers_.end(), [x,y](const EnemyTower& t){ return t.getX()==x && t.getY()==y; });
+    if (t_it != towers_.end()) {
+        t_it->takeDamage(damage);
+        if (t_it->isDestroyed()) {
+            player_.addScore(50);
+            giveSpellOnKill();
+        }
+        return true;
+    }
+    auto b_it = std::find_if(buildings_.begin(), buildings_.end(), [x,y](const EnemyBuilding& b){ return b.getX()==x && b.getY()==y; });
+    if (b_it != buildings_.end()) {
+        buildings_.erase(b_it);
+        player_.addScore(30);
+        setLastMessage("Building destroyed!");
+        giveSpellOnKill();
+        return true;
+    }
+    return false;
+}
+
+void Game::damagePlayer(int damage) { player_.takeDamage(damage); }
+void Game::spawnAlly(int px, int py, int c, int h, int d) {
+    for(int i=0; i<c; ++i) {
+        int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for(auto& dir : directions) {
+            if(canPlaceEntityAt(px+dir[0], py+dir[1])) {
+                allies_.emplace_back(h, d, px+dir[0], py+dir[1]);
+                break;
+            }
+        }
+    }
+}
+void Game::placeTrap(int x, int y, int d) { traps_.emplace_back(d, x, y); }
+bool Game::canPlaceEntityAt(int x, int y, bool ip) const {
+    if(!field_.isValidPosition(x,y) || field_.getCellType(x,y)==CellType::kObstacle) return false;
+    if(!ip && player_.getX()==x && player_.getY()==y) return false;
+    for(const auto& e: enemies_) if(e.getX()==x && e.getY()==y) return false;
+    for(const auto& t: towers_) if(t.getX()==x && t.getY()==y) return false;
+    for(const auto& b: buildings_) if(b.getX()==x && b.getY()==y) return false;
+    for(const auto& a: allies_) if(a.getX()==x && a.getY()==y) return false;
+    return true;
+}
+void Game::cleanupDestroyedEntities() {
+    enemies_.erase(std::remove_if(enemies_.begin(), enemies_.end(), [](const Enemy& e){return !e.isAlive();}), enemies_.end());
+    towers_.erase(std::remove_if(towers_.begin(), towers_.end(), [](const EnemyTower& t){return t.isDestroyed();}), towers_.end());
+    allies_.erase(std::remove_if(allies_.begin(), allies_.end(), [](const Ally& a){return !a.isAlive();}), allies_.end());
+}
+void Game::addRandomSpell() {
+    std::mt19937 rng(std::random_device{}());
+    int r = std::uniform_int_distribution<int>(0,4)(rng);
+    if(r==0) player_.getHand().addSpell(std::make_unique<DirectDamageSpell>(25,5));
+    else if(r==1) player_.getHand().addSpell(std::make_unique<AoESpell>(15,4,1));
+    else if(r==2) player_.getHand().addSpell(std::make_unique<TrapSpell>(40));
+    else if(r==3) player_.getHand().addSpell(std::make_unique<SummonSpell>(1,50,15));
+    else player_.getHand().addSpell(std::make_unique<BoostSpell>());
+}
+void Game::spawnEnemyNear(int x, int y) {
+    int ehp = (current_level_==1)?40:(current_level_==2?50:60);
+    int edmg = (current_level_==1)?15:(current_level_==2?20:25);
+
+    int directions[4][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+    for (auto& dir : directions) {
+        int spawnX = x + dir[0];
+        int spawnY = y + dir[1];
+        if (canPlaceEntityAt(spawnX, spawnY)) {
+            enemies_.emplace_back(ehp, edmg, spawnX, spawnY);
+            setLastMessage(last_turn_message_ + " A new enemy has spawned!");
+            return;
+        }
+    }
+}
+
+const Field& Game::getField() const { return field_; }
+Player& Game::getPlayer() { return player_; }
+const std::vector<Enemy>& Game::getEnemies() const { return enemies_; }
+const std::vector<EnemyBuilding>& Game::getBuildings() const { return buildings_; }
+const std::vector<Ally>& Game::getAllies() const { return allies_; }
+const std::vector<EnemyTower>& Game::getTowers() const { return towers_; }
+const std::vector<Trap>& Game::getTraps() const { return traps_; }
+GameState Game::getGameState() const { return game_state_; }
+const std::string& Game::getLastMessage() const { return last_turn_message_; }
+void Game::setLastMessage(const std::string& message) {
+    last_turn_message_ = message;
+    notifyObservers(message);
+}
+
+====================
+FILE: Game.h
+====================
+#ifndef GAMELB1_GAME_H
+#define GAMELB1_GAME_H
+
+#include "Field.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "EnemyBuilding.h"
+#include "Ally.h"
+#include "EnemyTower.h"
+#include "Trap.h"
+#include <vector>
+#include <string>
+#include <memory>
+#include "Logger.h"
+
+enum class GameState {
+    PlayerTurn,
+    Aiming,
+    SelectingSpellTarget,
+    UpgradeMenu,
+    GameOver,
+    Victory
+};
+
+class Game : public Observable {
+public:
+    Game(int field_width, int field_height);
+
+    void processPlayerMove(char direction);
+    void processPlayerAction(char action);
+    void processPlayerAim(char direction);
+    void endPlayerTurn();
+    void selectSpell(int index);
+    void applySpell(int target_x, int target_y);
+    void cancelSpellSelection();
+
+    void tryNextLevel();
+    void upgradePlayer(int choice);
+    void restartGame();
+    void saveGame(const std::string& filename);
+    void loadGame(const std::string& filename);
+    int getCurrentLevel() const;
+
+    const Field& getField() const;
+    Player& getPlayer();
+    const std::vector<Enemy>& getEnemies() const;
+    const std::vector<EnemyBuilding>& getBuildings() const;
+    const std::vector<Ally>& getAllies() const;
+    const std::vector<EnemyTower>& getTowers() const;
+    const std::vector<Trap>& getTraps() const;
+
+    GameState getGameState() const;
+    const std::string& getLastMessage() const;
+    void setLastMessage(const std::string& message);
+
+    bool damageEntityAt(int x, int y, int damage);
+    void spawnAlly(int p_x, int p_y, int count, int health, int damage);
+    void placeTrap(int x, int y, int damage);
+    void damagePlayer(int damage);
+    bool canPlaceEntityAt(int x, int y, bool ignore_player = false) const;
+
+    // --- НОВОЕ ДЛЯ АНИМАЦИИ ---
+    const std::vector<std::pair<int, int>>& getLastShotPath() const;
+    bool hasNewShotAnimation() const;
+    void clearShotAnimation();
+    // ---------------------------
+
+private:
+    void initializeLevel();
+    void updateAfterPlayerTurn();
+
+    void updateEnemies();
+    void updateBuildings();
+    void updateTowers();
+    void updateAllies();
+    void checkTraps();
+
+    void spawnEnemyNear(int x, int y);
+    void cleanupDestroyedEntities();
+    void giveSpellOnKill();
+    void addRandomSpell();
+
+    void clearEntities();
+
+    Field field_;
+    Player player_;
+    std::vector<Enemy> enemies_;
+    std::vector<EnemyBuilding> buildings_;
+    std::vector<Ally> allies_;
+    std::vector<EnemyTower> towers_;
+    std::vector<Trap> traps_;
+
+    GameState game_state_;
+    std::string last_turn_message_;
+
+    int selected_spell_index_ = -1;
+    int enemies_killed_since_last_spell_ = 0;
+
+    int current_level_ = 1;
+
+    // --- ПЕРЕМЕННЫЕ ДЛЯ АНИМАЦИИ ---
+    std::vector<std::pair<int, int>> last_shot_path_;
+    bool has_new_shot_ = false;
+};
+
+#endif //GAMELB1_GAME_H
+
+====================
+FILE: GameExceptions.h
+====================
+#ifndef GAMELB1_GAMEEXCEPTIONS_H
+#define GAMELB1_GAMEEXCEPTIONS_H
+
+#include <stdexcept>
+#include <string>
+
+class GameException : public std::runtime_error {
+public:
+    explicit GameException(const std::string& message) : std::runtime_error(message) {}
+};
+
+class SaveFileException : public GameException {
+public:
+    explicit SaveFileException(const std::string& message)
+        : GameException("Save File Error: " + message) {}
+};
+
+class LoadFileException : public GameException {
+public:
+    explicit LoadFileException(const std::string& message)
+        : GameException("Load File Error: " + message) {}
+};
+
+class CorruptedDataException : public GameException {
+public:
+    explicit CorruptedDataException(const std::string& message)
+        : GameException("Data Corruption Error: " + message) {}
+};
+
+#endif //GAMELB1_GAMEEXCEPTIONS_H
+
+====================
+FILE: GameLauncher.h
+====================
+#ifndef GAMELB1_GAMELAUNCHER_H
+#define GAMELB1_GAMELAUNCHER_H
+
+#include "Game.h"
+#include "Command.h"
+#include <memory>
+
+
+template <typename InputReaderT>
+class GameController {
+public:
+    GameController(Game& game, InputReaderT& inputReader)
+            : game_(game), inputReader_(inputReader) {}
+
+    void handleInput(const sf::Event& event) {
+        std::unique_ptr<Command> command = inputReader_.handleInput(event);
+        if (command) {
+            if (game_.getGameState() == GameState::UpgradeMenu) {
+                auto* spellCmd = dynamic_cast<SelectSpellCommand*>(command.get());
+                if (spellCmd) {
+                }
+            }
+            command->execute(game_);
+        }
+    }
+
+private:
+    Game& game_;
+    InputReaderT& inputReader_;
+};
+
+template <typename RendererT>
+class GameVisualizer {
+public:
+    GameVisualizer(Game& game, RendererT& renderer)
+            : game_(game), renderer_(renderer) {}
+
+    void render(sf::RenderWindow& window) {
+        renderer_.draw(window);
+    }
+
+private:
+    Game& game_;
+    RendererT& renderer_;
+};
+
+#endif //GAMELB1_GAMELAUNCHER_H
+
+====================
+FILE: GameView.cpp
+====================
+#include "GameView.h"
+#include <string>
+#include <cmath>
+#include <thread>
+#include <chrono>
+#include <iostream>
+
+GameView::GameView(Game& game, float tile_size)
+        : game_(game), tile_size_(tile_size) {}
+
+bool GameView::loadFont(const std::string &path) {
+    if (!font_.loadFromFile(path)) {
+        return false;
+    }
+    status_text_.setFont(font_);
+    status_text_.setCharacterSize(18);
+    status_text_.setFillColor(sf::Color::White);
+
+    message_text_.setFont(font_);
+    message_text_.setCharacterSize(16);
+    message_text_.setFillColor(sf::Color::Yellow);
+
+    spells_text_.setFont(font_);
+    spells_text_.setCharacterSize(16);
+    spells_text_.setFillColor(sf::Color::Cyan);
+
+    return true;
+}
+
+
+bool GameView::loadSounds(const std::string& shootPath, const std::string& hitPath) {
+    if (!shoot_buffer_.loadFromFile(shootPath)) {
+        std::cerr << "Failed to load sound: " << shootPath << std::endl;
+        return false;
+    }
+    if (!hit_buffer_.loadFromFile(hitPath)) {
+        std::cerr << "Failed to load sound: " << hitPath << std::endl;
+        return false;
+    }
+
+    shoot_sound_.setBuffer(shoot_buffer_);
+    hit_sound_.setBuffer(hit_buffer_);
+
+
+    shoot_sound_.setVolume(50);
+    hit_sound_.setVolume(60);
+
+    return true;
+}
+
+
+void GameView::playShotAnimation(sf::RenderWindow& window) {
+    const auto& path = game_.getLastShotPath();
+    if (path.empty()) return;
+
+    shoot_sound_.play();
+
+    float startX = game_.getPlayer().getX() * tile_size_ + tile_size_ / 2;
+    float startY = game_.getPlayer().getY() * tile_size_ + tile_size_ / 2;
+
+    sf::RectangleShape arrow(sf::Vector2f(20.0f, 4.0f));
+    arrow.setOrigin(10.0f, 2.0f);
+    arrow.setFillColor(sf::Color::Yellow);
+    arrow.setPosition(startX, startY);
+
+    if (!path.empty()) {
+        float dx = (path[0].first * tile_size_ + tile_size_ / 2) - startX;
+        float dy = (path[0].second * tile_size_ + tile_size_ / 2) - startY;
+        float angle = std::atan2(dy, dx) * 180 / 3.14159f;
+        arrow.setRotation(angle);
+    }
+
+    float currentX = startX;
+    float currentY = startY;
+    const int steps_per_tile = 5;
+
+    for (const auto& target : path) {
+        float targetX = target.first * tile_size_ + tile_size_ / 2;
+        float targetY = target.second * tile_size_ + tile_size_ / 2;
+
+        float stepX = (targetX - currentX) / steps_per_tile;
+        float stepY = (targetY - currentY) / steps_per_tile;
+
+        for (int i = 0; i < steps_per_tile; ++i) {
+            currentX += stepX;
+            currentY += stepY;
+            arrow.setPosition(currentX, currentY);
+
+            window.clear(sf::Color::Black);
+            draw(window);
+            window.draw(arrow);
+            window.display();
+
+            sf::sleep(sf::milliseconds(10));
+        }
+        currentX = targetX;
+        currentY = targetY;
+    }
+
+    hit_sound_.play();
+
+    sf::CircleShape boom(5.0f);
+    boom.setFillColor(sf::Color::Red);
+    boom.setOrigin(5.0f, 5.0f);
+    boom.setPosition(currentX, currentY);
+
+    for (int i = 0; i < 10; ++i) {
+        float radius = 5.0f + i * 2.5f;
+        boom.setRadius(radius);
+        boom.setOrigin(radius, radius);
+
+        window.clear(sf::Color::Black);
+        draw(window);
+        window.draw(boom);
+        window.display();
+        sf::sleep(sf::milliseconds(20));
+    }
+}
+
+void GameView::draw(sf::RenderWindow &window) {
+    const auto& field = game_.getField();
+
+    for (int y = 0; y < field.getHeight(); ++y) {
+        for (int x = 0; x < field.getWidth(); ++x) {
+            sf::RectangleShape tile(sf::Vector2f(tile_size_, tile_size_));
+            tile.setPosition(x * tile_size_, y * tile_size_);
+            switch (field.getCellType(x, y)) {
+                case CellType::kEmpty:       tile.setFillColor(sf::Color(50, 50, 50)); break;
+                case CellType::kObstacle:    tile.setFillColor(sf::Color(128, 128, 128)); break;
+                case CellType::kSlowingTrap: tile.setFillColor(sf::Color(0, 100, 0)); break;
+                default:                     tile.setFillColor(sf::Color(50, 50, 50)); break;
+            }
+            window.draw(tile);
+        }
+    }
+
+    for(const auto& trap : game_.getTraps()) {
+        sf::CircleShape trap_shape(tile_size_ / 3);
+        trap_shape.setPosition(trap.getX() * tile_size_ + tile_size_/6, trap.getY() * tile_size_ + tile_size_/6);
+        trap_shape.setFillColor(sf::Color(255, 100, 0, 150));
+        window.draw(trap_shape);
+    }
+    for(const auto& building : game_.getBuildings()) {
+        sf::RectangleShape tile(sf::Vector2f(tile_size_, tile_size_));
+        tile.setPosition(building.getX() * tile_size_, building.getY() * tile_size_);
+        tile.setFillColor(sf::Color(139, 69, 19));
+        window.draw(tile);
+    }
+    for(const auto& tower : game_.getTowers()) {
+        sf::RectangleShape tile(sf::Vector2f(tile_size_, tile_size_));
+        tile.setPosition(tower.getX() * tile_size_, tower.getY() * tile_size_);
+        tile.setFillColor(sf::Color(100, 100, 100));
+        tile.setOutlineColor(sf::Color::Red);
+        tile.setOutlineThickness(-2);
+        window.draw(tile);
+    }
+    for(const auto& enemy : game_.getEnemies()) {
+        sf::RectangleShape tile(sf::Vector2f(tile_size_, tile_size_));
+        tile.setPosition(enemy.getX() * tile_size_, enemy.getY() * tile_size_);
+        tile.setFillColor(sf::Color::Red);
+        window.draw(tile);
+    }
+    for(const auto& ally : game_.getAllies()) {
+        sf::RectangleShape tile(sf::Vector2f(tile_size_, tile_size_));
+        tile.setPosition(ally.getX() * tile_size_, ally.getY() * tile_size_);
+        tile.setFillColor(sf::Color::Blue);
+        window.draw(tile);
+    }
+    const auto& player = game_.getPlayer();
+    sf::RectangleShape player_tile(sf::Vector2f(tile_size_, tile_size_));
+    player_tile.setPosition(player.getX() * tile_size_, player.getY() * tile_size_);
+    player_tile.setFillColor(sf::Color::Green);
+    window.draw(player_tile);
+
+    float window_height = static_cast<float>(window.getSize().y);
+    float ui_base_y = window_height - 120;
+
+    sf::RectangleShape ui_bg(sf::Vector2f(static_cast<float>(window.getSize().x), 120));
+    ui_bg.setPosition(0, ui_base_y);
+    ui_bg.setFillColor(sf::Color(20, 20, 20));
+    window.draw(ui_bg);
+
+    std::string status = "Level: " + std::to_string(game_.getCurrentLevel()) +
+                         " | HP: " + std::to_string(player.getHealth()) +
+                         " | Score: " + std::to_string(player.getScore()) +
+                         " | Mode: " + player.getModeName();
+    status_text_.setString(status);
+    status_text_.setPosition(10, ui_base_y + 5);
+    window.draw(status_text_);
+
+    sf::Text controls_text = status_text_;
+    controls_text.setString("[F5] Save  [F6] Load  [N] Next Level (when clear)  [Q] Quit");
+    controls_text.setCharacterSize(14);
+    controls_text.setFillColor(sf::Color(180, 180, 180));
+    controls_text.setPosition(10, ui_base_y + 30);
+    window.draw(controls_text);
+
+    std::string message = "Log: " + game_.getLastMessage();
+    message_text_.setString(message);
+    message_text_.setPosition(10, ui_base_y + 55);
+    window.draw(message_text_);
+
+    const auto& spells = game_.getPlayer().getHand().getSpells();
+    std::string spells_display_text = "Spells: ";
+    if (spells.empty()) {
+        spells_display_text += "(Empty)";
+    } else {
+        for(size_t i = 0; i < spells.size(); ++i) {
+            spells_display_text += "[" + std::to_string(i+1) + "] " + spells[i]->getName() + "  ";
+        }
+    }
+    spells_text_.setString(spells_display_text);
+    spells_text_.setPosition(10, ui_base_y + 80);
+    window.draw(spells_text_);
+}
+
+====================
+FILE: GameView.h
+====================
+#ifndef GAMELB1_GAMEVIEW_H
+#define GAMELB1_GAMEVIEW_H
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include "Game.h"
+
+class GameView {
+public:
+    GameView(Game& game, float tile_size);
+    bool loadFont(const std::string& path);
+    bool loadSounds(const std::string& shootPath, const std::string& hitPath);
+
+    void draw(sf::RenderWindow& window);
+
+    void playShotAnimation(sf::RenderWindow& window);
+
+private:
+    Game& game_;
+    float tile_size_;
+    sf::Font font_;
+    sf::Text status_text_;
+    sf::Text message_text_;
+    sf::Text spells_text_;
+
+    sf::SoundBuffer shoot_buffer_;
+    sf::SoundBuffer hit_buffer_;
+    sf::Sound shoot_sound_;
+    sf::Sound hit_sound_;
+};
+
+#endif //GAMELB1_GAMEVIEW_H
+
+====================
+FILE: InputHandler.cpp
+====================
+#include "InputHandler.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <set>
+
+InputHandler::InputHandler() {
+    setDefaultControls();
+}
+
+void InputHandler::setDefaultControls() {
+    keyMap_.clear();
+    keyMap_[sf::Keyboard::W] = GameAction::MOVE_UP;
+    keyMap_[sf::Keyboard::S] = GameAction::MOVE_DOWN;
+    keyMap_[sf::Keyboard::A] = GameAction::MOVE_LEFT;
+    keyMap_[sf::Keyboard::D] = GameAction::MOVE_RIGHT;
+    keyMap_[sf::Keyboard::C] = GameAction::ACTION_COMBAT;
+    keyMap_[sf::Keyboard::F] = GameAction::ACTION_FIRE;
+    keyMap_[sf::Keyboard::Num1] = GameAction::SPELL_1;
+    keyMap_[sf::Keyboard::Num2] = GameAction::SPELL_2;
+    keyMap_[sf::Keyboard::Num3] = GameAction::SPELL_3;
+    keyMap_[sf::Keyboard::Num4] = GameAction::SPELL_4;
+    keyMap_[sf::Keyboard::Num5] = GameAction::SPELL_5;
+    keyMap_[sf::Keyboard::F5] = GameAction::SAVE;
+    keyMap_[sf::Keyboard::F6] = GameAction::LOAD;
+    keyMap_[sf::Keyboard::N] = GameAction::NEXT_LEVEL;
+    keyMap_[sf::Keyboard::R] = GameAction::RESTART;
+    keyMap_[sf::Keyboard::Q] = GameAction::EXIT;
+}
+
+std::unique_ptr<Command> InputHandler::handleInput(const sf::Event& event) {
+    if (event.type != sf::Event::KeyPressed) return nullptr;
+
+    auto it = keyMap_.find(event.key.code);
+    if (it == keyMap_.end()) return nullptr;
+
+    switch (it->second) {
+        case GameAction::MOVE_UP:    return std::make_unique<MoveCommand>('w');
+        case GameAction::MOVE_DOWN:  return std::make_unique<MoveCommand>('s');
+        case GameAction::MOVE_LEFT:  return std::make_unique<MoveCommand>('a');
+        case GameAction::MOVE_RIGHT: return std::make_unique<MoveCommand>('d');
+
+        case GameAction::ACTION_COMBAT: return std::make_unique<ActionCommand>('c');
+        case GameAction::ACTION_FIRE:   return std::make_unique<ActionCommand>('f');
+
+        case GameAction::SPELL_1: return std::make_unique<SelectSpellCommand>(0);
+        case GameAction::SPELL_2: return std::make_unique<SelectSpellCommand>(1);
+        case GameAction::SPELL_3: return std::make_unique<SelectSpellCommand>(2);
+        case GameAction::SPELL_4: return std::make_unique<SelectSpellCommand>(3);
+        case GameAction::SPELL_5: return std::make_unique<SelectSpellCommand>(4);
+
+        case GameAction::SAVE: return std::make_unique<SaveCommand>();
+        case GameAction::LOAD: return std::make_unique<LoadCommand>();
+        case GameAction::NEXT_LEVEL: return std::make_unique<NextLevelCommand>();
+        case GameAction::RESTART: return std::make_unique<RestartCommand>();
+
+
+        default: return nullptr;
+    }
+}
+
+sf::Keyboard::Key InputHandler::stringToKey(const std::string& s) {
+    if (s == "W") return sf::Keyboard::W;
+    if (s == "U") return sf::Keyboard::U;
+    if (s == "S") return sf::Keyboard::S;
+    if (s == "A") return sf::Keyboard::A;
+    if (s == "D") return sf::Keyboard::D;
+    if (s == "C") return sf::Keyboard::C;
+    if (s == "F") return sf::Keyboard::F;
+    if (s == "1") return sf::Keyboard::Num1;
+    if (s == "2") return sf::Keyboard::Num2;
+    if (s == "3") return sf::Keyboard::Num3;
+    if (s == "4") return sf::Keyboard::Num4;
+    if (s == "5") return sf::Keyboard::Num5;
+    if (s == "F5") return sf::Keyboard::F5;
+    if (s == "F6") return sf::Keyboard::F6;
+    if (s == "N") return sf::Keyboard::N;
+    if (s == "R") return sf::Keyboard::R;
+    if (s == "Q") return sf::Keyboard::Q;
+    return sf::Keyboard::Unknown;
+}
+
+void InputHandler::loadConfig(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Config file not found, using defaults." << std::endl;
+        return;
+    }
+
+    std::map<sf::Keyboard::Key, GameAction> newMap;
+    std::set<sf::Keyboard::Key> usedKeys;
+    std::set<int> usedActions;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string actionStr, keyStr;
+        ss >> actionStr >> keyStr;
+
+        GameAction action = GameAction::NONE;
+        if (actionStr == "MOVE_UP") action = GameAction::MOVE_UP;
+        else if (actionStr == "MOVE_DOWN") action = GameAction::MOVE_DOWN;
+        else if (actionStr == "MOVE_LEFT") action = GameAction::MOVE_LEFT;
+        else if (actionStr == "MOVE_RIGHT") action = GameAction::MOVE_RIGHT;
+        else if (actionStr == "COMBAT") action = GameAction::ACTION_COMBAT;
+        else if (actionStr == "FIRE") action = GameAction::ACTION_FIRE;
+        else if (actionStr == "SPELL_1") action = GameAction::SPELL_1;
+        else if (actionStr == "SPELL_2") action = GameAction::SPELL_2;
+        else if (actionStr == "SPELL_3") action = GameAction::SPELL_3;
+        else if (actionStr == "SPELL_4") action = GameAction::SPELL_4;
+        else if (actionStr == "SPELL_5") action = GameAction::SPELL_5;
+        else if (actionStr == "SAVE") action = GameAction::SAVE;
+        else if (actionStr == "LOAD") action = GameAction::LOAD;
+        else if (actionStr == "NEXT") action = GameAction::NEXT_LEVEL;
+        else if (actionStr == "RESTART") action = GameAction::RESTART;
+        else if (actionStr == "EXIT") action = GameAction::EXIT;
+
+        if (action == GameAction::NONE) continue;
+
+        sf::Keyboard::Key key = stringToKey(keyStr);
+        if (key == sf::Keyboard::Unknown) {
+            std::cerr << "Unknown key in config: " << keyStr << ". Using defaults." << std::endl;
+            setDefaultControls();
+            return;
+        }
+
+        if (usedKeys.count(key) || usedActions.count((int)action)) {
+            std::cerr << "Duplicate key or action in config. Using defaults." << std::endl;
+            setDefaultControls();
+            return;
+        }
+
+        newMap[key] = action;
+        usedKeys.insert(key);
+        usedActions.insert((int)action);
+    }
+
+    if (!newMap.empty()) {
+        keyMap_ = newMap;
+        std::cout << "Controls loaded from " << filename << std::endl;
+    }
+}
+
+====================
+FILE: InputHandler.h
+====================
+#ifndef GAMELB1_INPUTHANDLER_H
+#define GAMELB1_INPUTHANDLER_H
+
+#include <SFML/Window/Event.hpp>
+#include <map>
+#include <string>
+#include <memory>
+#include "Command.h"
+
+enum class GameAction {
+    MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT,
+    ACTION_COMBAT, ACTION_FIRE,
+    SPELL_1, SPELL_2, SPELL_3, SPELL_4, SPELL_5,
+    SAVE, LOAD, NEXT_LEVEL, RESTART,
+    UPGRADE_1, UPGRADE_2,
+    EXIT,
+    NONE
+};
+
+class InputHandler {
+public:
+    InputHandler();
+
+    void loadConfig(const std::string& filename);
+
+    std::unique_ptr<Command> handleInput(const sf::Event& event);
+
+private:
+    std::map<sf::Keyboard::Key, GameAction> keyMap_;
+
+    void setDefaultControls();
+    sf::Keyboard::Key stringToKey(const std::string& s);
+};
+
+#endif //GAMELB1_INPUTHANDLER_H
+
+====================
+FILE: ISpell.h
+====================
+#ifndef GAMELB1_ISPELL_H
+#define GAMELB1_ISPELL_H
+
+#include <string>
+#include <memory>
+
+class Game;
+
+class ISpell {
+public:
+    virtual ~ISpell() = default;
+
+    virtual void apply(Game& game, int target_x, int target_y) = 0;
+
+    virtual std::unique_ptr<ISpell> clone() const = 0;
+
+    virtual std::string getName() const = 0;
+    virtual std::string getDescription() const = 0;
+
+    virtual int getTypeId() const = 0;
+};
+
+#endif //GAMELB1_ISPELL_H
+
+====================
+FILE: Logger.h
+====================
+#ifndef GAMELB1_LOGGER_H
+#define GAMELB1_LOGGER_H
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+class ILogger {
+public:
+    virtual ~ILogger() = default;
+    virtual void log(const std::string& message) = 0;
+};
+
+class ConsoleLogger : public ILogger {
+public:
+    void log(const std::string& message) override {
+        std::cout << "[LOG]: " << message << std::endl;
+    }
+};
+
+class FileLogger : public ILogger {
+    std::ofstream ofs;
+public:
+    explicit FileLogger(const std::string& filename) {
+        ofs.open(filename, std::ios::app); // Дописываем в конец
+    }
+    ~FileLogger() override {
+        if (ofs.is_open()) ofs.close();
+    }
+    void log(const std::string& message) override {
+        if (ofs.is_open()) {
+            ofs << "[LOG]: " << message << std::endl;
+        }
+    }
+};
+
+class Observable {
+    std::vector<ILogger*> observers;
+public:
+    void addObserver(ILogger* observer) {
+        observers.push_back(observer);
+    }
+
+    void notifyObservers(const std::string& message) {
+        for (auto* obs : observers) {
+            obs->log(message);
+        }
+    }
+};
+
+#endif //GAMELB1_LOGGER_H
+
+====================
+FILE: main.cpp
+====================
+#include <SFML/Graphics.hpp>
+#include "Game.h"
+#include "GameView.h"
+#include "GameExceptions.h"
+#include "InputHandler.h"
+#include "GameLauncher.h"
+#include "Logger.h"
+#include <iostream>
+#include <cstring>
+
+const float TILE_SIZE = 32.0f;
+
+void showEndScreen(sf::RenderWindow& window, const std::string& message, sf::Font& font) {
+    sf::Text endText(message, font, 40);
+    endText.setFillColor(sf::Color::White);
+    sf::FloatRect textRect = endText.getLocalBounds();
+    endText.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
+    endText.setPosition(window.getSize().x/2.0f, window.getSize().y/2.0f);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed)) {
+                window.close();
+                return;
+            }
+        }
+        window.clear(sf::Color::Black);
+        window.draw(endText);
+        window.display();
+    }
+}
+
+int main(int argc, char* argv[]) {
+    try {
+        int field_width = 15;
+        int field_height = 15;
+        Game game(field_width, field_height);
+
+        ILogger* logger = nullptr;
+        bool useFileLog = false;
+
+        if (argc >= 3 && std::strcmp(argv[1], "-log") == 0) {
+            if (std::strcmp(argv[2], "file") == 0) {
+                logger = new FileLogger("game_log.txt");
+                useFileLog = true;
+                std::cout << "Logging to game_log.txt" << std::endl;
+            } else {
+                logger = new ConsoleLogger();
+                std::cout << "Logging to console" << std::endl;
+            }
+        }
+
+        if (logger) {
+            game.addObserver(logger);
+        }
+
+        InputHandler inputHandler;
+        inputHandler.loadConfig("controls.conf");
+
+        sf::RenderWindow window(sf::VideoMode(900, 950), "RPG Game Lab 4", sf::Style::Titlebar | sf::Style::Close);
+        window.setFramerateLimit(60);
+
+        GameView gameView(game, TILE_SIZE);
+
+        // --- ЗАГРУЗКА РЕСУРСОВ ---
+        if (!gameView.loadFont("arial.ttf")) {
+            std::cerr << "Error loading font!" << std::endl;
+        }
+
+        if (!gameView.loadSounds("shoot.wav", "hit.wav")) {
+            std::cerr << "Warning: Could not load sound files (shoot.wav, hit.wav)" << std::endl;
+        }
+
+
+        GameController<InputHandler> controller(game, inputHandler);
+        GameVisualizer<GameView> visualizer(game, gameView);
+
+        while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    window.close();
+                }
+
+                if (event.type == sf::Event::KeyPressed) {
+                    try {
+                        if (event.key.code == sf::Keyboard::Q) window.close();
+
+                        if (game.getGameState() == GameState::UpgradeMenu) {
+                            if (event.key.code == sf::Keyboard::Num1) game.upgradePlayer(1);
+                            if (event.key.code == sf::Keyboard::Num2) game.upgradePlayer(2);
+                        } else {
+                            controller.handleInput(event);
+                        }
+
+                        if (game.hasNewShotAnimation()) {
+                            gameView.playShotAnimation(window);
+                            game.clearShotAnimation();
+                            game.endPlayerTurn();
+                        }
+
+                    } catch (const GameException& e) {
+                        game.setLastMessage(std::string("Error: ") + e.what());
+                    }
+                }
+
+                if (game.getGameState() == GameState::SelectingSpellTarget) {
+                    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                        int tx = event.mouseButton.x / TILE_SIZE;
+                        int ty = event.mouseButton.y / TILE_SIZE;
+                        game.applySpell(tx, ty);
+                    }
+                }
+            }
+
+            window.clear(sf::Color::Black);
+
+            if (game.getGameState() == GameState::GameOver) {
+                sf::Font f; f.loadFromFile("arial.ttf");
+                showEndScreen(window, "GAME OVER (Press Key)", f);
+                window.close();
+            } else if (game.getGameState() == GameState::Victory) {
+                sf::Font f; f.loadFromFile("arial.ttf");
+                showEndScreen(window, "VICTORY!", f);
+                window.close();
+            } else {
+                visualizer.render(window);
+            }
+
+            window.display();
+        }
+
+        if (logger && useFileLog) delete logger;
+        else if (logger) delete logger;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Critical: " << e.what() << std::endl;
+        return -1;
+    }
+
+    return 0;
+}
+
+====================
+FILE: Player.cpp
+====================
+#include "Player.h"
+#include <algorithm>
+
+Player::Player(int health, int melee_damage, int ranged_damage, int score, int x, int y)
+        : Creature(health, 0, x, y),
+          score_(score),
+          melee_damage_(melee_damage),
+          ranged_damage_(ranged_damage),
+          max_health_(health),
+          combat_mode_(CombatMode::kMelee),
+          is_slowed_(false),
+          hand_(5),
+          boost_charges_(0) {}
+
+Player::Player() : Player(100, 20, 10, 0, 0, 0) {}
+
+int Player::getDamage() const {
+    return combat_mode_ == CombatMode::kMelee ? melee_damage_ : ranged_damage_;
+}
+
+void Player::switchCombatMode() {
+    combat_mode_ = (combat_mode_ == CombatMode::kMelee) ? CombatMode::kRanged : CombatMode::kMelee;
+}
+
+int Player::getScore() const {
+    return score_;
+}
+
+void Player::addScore(int points) {
+    score_ += points;
+}
+
+std::string Player::getModeName() const {
+    return combat_mode_ == CombatMode::kMelee ? "Melee" : "Ranged";
+}
+
+bool Player::isSlowed() const {
+    return is_slowed_;
+}
+
+void Player::setSlowed(bool slowed) {
+    is_slowed_ = slowed;
+}
+
+PlayerHand& Player::getHand() {
+    return hand_;
+}
+
+void Player::addBoostCharge(int amount) {
+    boost_charges_ += amount;
+}
+
+int Player::consumeBoostCharges() {
+    int charges = boost_charges_;
+    boost_charges_ = 0;
+    return charges;
+}
+
+
+void Player::heal() {
+    health_ = max_health_;
+}
+
+void Player::setMaxHealth(int new_max) {
+    max_health_ = new_max;
+    if (health_ > max_health_) health_ = max_health_;
+}
+
+void Player::increaseDamage(int amount) {
+    melee_damage_ += amount;
+    ranged_damage_ += amount;
+}
+
+int Player::getBoostCharges() const {
+    return boost_charges_;
+}
+
+void Player::setBoostCharges(int amount) {
+    boost_charges_ = amount;
+}
+
+====================
+FILE: Player.h
+====================
+#ifndef GAMELB1_PLAYER_H
+#define GAMELB1_PLAYER_H
+
+#include "Creature.h"
+#include "PlayerHand.h"
+#include <string>
+#include <memory>
+
+class Player : public Creature {
+public:
+    enum class CombatMode {
+        kMelee,
+        kRanged
+    };
+
+    Player(int health, int melee_damage, int ranged_damage, int score, int x, int y);
+    Player();
+
+    int getDamage() const override;
+    void switchCombatMode();
+
+    int getScore() const;
+    void addScore(int points);
+    std::string getModeName() const;
+
+    bool isSlowed() const;
+    void setSlowed(bool slowed);
+
+    PlayerHand& getHand();
+    void addBoostCharge(int amount);
+    int consumeBoostCharges();
+
+    int getBoostCharges() const;
+    void setBoostCharges(int amount);
+
+    void heal();
+    void setMaxHealth(int new_max);
+    void increaseDamage(int amount);
+
+
+private:
+    int score_;
+    int melee_damage_;
+    int ranged_damage_;
+    int max_health_;
+
+    CombatMode combat_mode_;
+    bool is_slowed_;
+    PlayerHand hand_;
+    int boost_charges_;
+};
+
+#endif //GAMELB1_PLAYER_H
+
+====================
+FILE: PlayerHand.cpp
+====================
+#include "PlayerHand.h"
+#include <utility>
+
+#include <random>
+
+#include "DirectDamageSpell.h"
+#include "AoESpell.h"
+#include "TrapSpell.h"
+#include "SummonSpell.h"
+#include "BoostSpell.h"
+#include "GameExceptions.h"
+
+PlayerHand::PlayerHand(size_t max_size) : max_size_(max_size) {}
+
+bool PlayerHand::addSpell(std::unique_ptr<ISpell> spell) {
+    if (spells_.size() < max_size_) {
+        spells_.push_back(std::move(spell));
+        return true;
+    }
+    return false;
+}
+
+void PlayerHand::useSpell(int index, Game& game, int target_x, int target_y) {
+    if (index >= 0 && index < spells_.size()) {
+        spells_[index]->apply(game, target_x, target_y);
+        spells_.erase(spells_.begin() + index);
+    }
+}
+
+const std::vector<std::unique_ptr<ISpell>>& PlayerHand::getSpells() const {
+    return spells_;
+}
+
+bool PlayerHand::isFull() const {
+    return spells_.size() >= max_size_;
+}
+
+void PlayerHand::save(std::ostream& os) const {
+    os << spells_.size() << "\n";
+    for (const auto& spell : spells_) {
+        os << spell->getTypeId() << "\n";
+    }
+}
+
+void PlayerHand::load(std::istream& is) {
+    size_t count;
+    if (!(is >> count)) return;
+
+    spells_.clear();
+    for (size_t i = 0; i < count; ++i) {
+        int type;
+        is >> type;
+        if (is.fail()) throw CorruptedDataException("Failed to read spell type");
+
+        switch (type) {
+            case 0: spells_.push_back(std::make_unique<DirectDamageSpell>(25, 5)); break;
+            case 1: spells_.push_back(std::make_unique<AoESpell>(15, 4, 1)); break;
+            case 2: spells_.push_back(std::make_unique<TrapSpell>(40)); break;
+            case 3: spells_.push_back(std::make_unique<SummonSpell>(1, 50, 15)); break;
+            case 4: spells_.push_back(std::make_unique<BoostSpell>()); break;
+            default: throw CorruptedDataException("Unknown spell type in save file: " + std::to_string(type));
+        }
+    }
+}
+
+void PlayerHand::removeRandomSpell() {
+    if (spells_.empty()) return;
+
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(0, spells_.size() - 1);
+
+    int index_to_remove = dist(rng);
+    spells_.erase(spells_.begin() + index_to_remove);
+}
+
+====================
+FILE: PlayerHand.h
+====================
+// PlayerHand.h
+#ifndef GAMELB1_PLAYERHAND_H
+#define GAMELB1_PLAYERHAND_H
+
+#include <vector>
+#include <memory>
+#include "ISpell.h"
+#include <iostream>
+
+class PlayerHand {
+public:
+    PlayerHand(size_t max_size);
+
+    bool addSpell(std::unique_ptr<ISpell> spell);
+    void useSpell(int index, Game& game, int target_x, int target_y);
+    const std::vector<std::unique_ptr<ISpell>>& getSpells() const;
+    bool isFull() const;
+    void removeRandomSpell();
+    void save(std::ostream& os) const;
+    void load(std::istream& is);
+
+private:
+    size_t max_size_;
+    std::vector<std::unique_ptr<ISpell>> spells_;
+};
+
+#endif //GAMELB1_PLAYERHAND_H
+
+====================
+FILE: SummonSpell.cpp
+====================
+#include "SummonSpell.h"
+#include "Game.h"
+
+SummonSpell::SummonSpell(int count, int health, int damage) : count_(count), health_(health), damage_(damage) {}
+
+void SummonSpell::apply(Game& game, int target_x, int target_y) {
+    int active_count = count_;
+    int boosts = game.getPlayer().consumeBoostCharges();
+    if (boosts > 0) {
+        active_count += boosts;
+    }
+
+    game.spawnAlly(game.getPlayer().getX(), game.getPlayer().getY(), active_count, health_, damage_);
+
+    std::string message = "Summoned " + std::to_string(active_count) + " ally/allies!";
+    if (boosts > 0) {
+        message += " (Boosted summon!)";
+    }
+    game.setLastMessage(message);
+
+    game.endPlayerTurn();
+}
+
+std::unique_ptr<ISpell> SummonSpell::clone() const {
+    return std::make_unique<SummonSpell>(*this);
+}
+
+std::string SummonSpell::getName() const { return "Summon Wolf"; }
+std::string SummonSpell::getDescription() const {
+    return "Summons " + std::to_string(count_) + " ally/allies near the player.";
+}
+int& SummonSpell::getCount() { return count_; }
+
+int SummonSpell::getTypeId() const {
+    return 3;
+}
+
+====================
+FILE: SummonSpell.h
+====================
+#ifndef GAMELB1_SUMMONSPELL_H
+#define GAMELB1_SUMMONSPELL_H
+
+#include "ISpell.h"
+
+class SummonSpell : public ISpell {
+public:
+    SummonSpell(int count, int health, int damage);
+
+    void apply(Game& game, int target_x, int target_y) override;
+    std::unique_ptr<ISpell> clone() const override;
+    std::string getName() const override;
+    std::string getDescription() const override;
+
+    int getTypeId() const override;
+
+    int& getCount();
+
+private:
+    int count_;
+    int health_;
+    int damage_;
+};
+
+#endif //GAMELB1_SUMMONSPELL_H
+
+====================
+FILE: Trap.cpp
+====================
+#include "Trap.h"
+
+Trap::Trap(int damage, int x, int y) : Entity(x, y), damage_(damage) {}
+
+int Trap::getDamage() const {
+    return damage_;
+}
+
+====================
+FILE: Trap.h
+====================
+#ifndef GAMELB1_TRAP_H
+#define GAMELB1_TRAP_H
+
+#include "Entity.h"
+
+class Trap : public Entity {
+public:
+    Trap(int damage, int x, int y);
+    int getDamage() const;
+
+private:
+    int damage_;
+};
+
+#endif //GAMELB1_TRAP_H
+
+====================
+FILE: TrapSpell.cpp
+====================
+#include "TrapSpell.h"
+#include "Game.h"
+
+TrapSpell::TrapSpell(int damage) : damage_(damage) {}
+
+void TrapSpell::apply(Game& game, int target_x, int target_y) {
+    int active_damage = damage_;
+    int boosts = game.getPlayer().consumeBoostCharges();
+    if (boosts > 0) {
+        active_damage += boosts * 10;
+    }
+
+    if (game.canPlaceEntityAt(target_x, target_y)) {
+        game.placeTrap(target_x, target_y, active_damage);
+        std::string message = "A magical trap has been set!";
+        if (boosts > 0) {
+            message += " (Boosted damage!)";
+        }
+        game.setLastMessage(message);
+        game.endPlayerTurn();
+    } else {
+        game.setLastMessage("Cannot place a trap there.");
+    }
+}
+
+std::unique_ptr<ISpell> TrapSpell::clone() const {
+    return std::make_unique<TrapSpell>(*this);
+}
+
+std::string TrapSpell::getName() const { return "Magic Trap"; }
+std::string TrapSpell::getDescription() const {
+    return "Places a trap that deals " + std::to_string(damage_) + " damage when an enemy steps on it.";
+}
+int& TrapSpell::getDamage() { return damage_; }
+
+int TrapSpell::getTypeId() const {
+    return 2;
+}
+
+====================
+FILE: TrapSpell.h
+====================
+#ifndef GAMELB1_TRAPSPELL_H
+#define GAMELB1_TRAPSPELL_H
+
+#include "ISpell.h"
+
+class TrapSpell : public ISpell {
+public:
+    explicit TrapSpell(int damage);
+
+    void apply(Game& game, int target_x, int target_y) override;
+    std::unique_ptr<ISpell> clone() const override;
+    std::string getName() const override;
+    std::string getDescription() const override;
+
+    int getTypeId() const override;
+
+    int& getDamage();
+
+private:
+    int damage_;
+};
+
+#endif //GAMELB1_TRAPSPELL_H
+

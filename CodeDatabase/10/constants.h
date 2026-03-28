@@ -1,0 +1,50 @@
+#pragma once
+
+namespace constants {
+    const int FIELD_MIN_SIZE = 10;
+    const int FIELD_MAX_SIZE = 25;
+    const int ENEMY_INITIAL_LIVES = 5;
+    const int ENEMY_INITIAL_X = 3;
+    const int ENEMY_INITIAL_Y = 3;
+    const int ENEMY_DAMAGE_POWER = 1;
+    const int PLAYER_NEAR_COMBAT_POWER = 2;
+    const int PLAYER_FAR_COMBAT_POWER = 1;
+    const int PLAYER_NEAR_RADIUS = 1;
+    const int PLAYER_FAR_RADIUS = 3;
+    const int PLAYER_INITIAL_LIVES = 200;
+    const int PLAYER_INITIAL_X = 0;
+    const int PLAYER_INITIAL_Y = 0;
+    const int FRIEND_INITIAL_LIVES = 5;
+    const int FRIEND_DAMAGE_POWER = 1;
+    const int TOWER_SPAWN_RATE = 10;
+    const int TOWER_INITIAL_X = 5;
+    const int TOWER_INITIAL_Y = 5;
+    const int SLOW_TRAP_DURATION = 2;
+    const int HAND_SIZE = 5;
+    const int AREA_SPELL_COST = 1;
+    const int AREA_SPELL_RADIUS = 5;
+    const int AREA_SPELL_POWER = 3;
+    const int AREA_SPELL_AREA = 2;
+    const int DIRECT_SPELL_COST = 1;
+    const int DIRECT_SPELL_RADIUS = 1;
+    const int DIRECT_SPELL_POWER = 5;
+    const int TRAP_SPELL_COST = 1;
+    const int TRAP_SPELL_RADIUS = 10;
+    const int TRAP_SPELL_POWER = 5;
+    const int DAMAGE_TOWER_INITIAL_X = 8;
+    const int DAMAGE_TOWER_INITIAL_Y = 0;
+    const int DAMAGE_TOWER_LIVES = 3;
+    const int DAMAGE_TOWER_COOLDOWN = 4;
+    const int TOWER_SPELL_COST = 0;
+    const int TOWER_SPELL_RADIUS = 3;
+    const int TOWER_SPELL_POWER = 2;
+    const int SUMMON_SPELL_COST = 1;
+    const int SUMMON_SPELL_RADIUS = 1;
+    const int SUMMON_SPELL_POWER = 0;
+    const int BOOST_SPELL_COST = 1;
+    const int FIELD_SIZE_INCREMENT = 3;
+    const int ENEMY_DAMAGE_INCREMENT = 2;
+    const int TOWER_DAMAGE_INCREMENT = 2;
+    const int PLAYER_DAMAGE_INCREMENT = 1;
+    const int SPELL_DAMAGE_INCREMENT = 2;
+}

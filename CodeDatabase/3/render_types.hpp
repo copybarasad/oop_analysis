@@ -1,0 +1,16 @@
+#pragma once
+
+enum class RenderFieldType {
+    FIELD_TOWER_ATTACK,
+    PLAYER_RANGE,
+    PLAYER_MELEE,
+    PLAYER_WAITING,
+    ENEMY,
+    ENEMY_WAITING,
+    FIELD_TOWER,
+    FIELD_DEFAULT,
+    FIELD_BLOCK,
+    FIELD_TRAP,
+    FIELD_SLOW,
+    BULLET
+};

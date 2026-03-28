@@ -1,0 +1,13 @@
+z=move_up
+a=move_left
+s=move_down
+d=move_right
+attack=attack
+switch_mode=switch_mode
+buy_spell=buy_spell
+cast=cast
+info=info
+save=save
+load=load
+quit=quit
+help=help

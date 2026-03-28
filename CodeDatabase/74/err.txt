@@ -1,0 +1,85 @@
+xxop@xxop-linux:/mnt/shared/ooplab4/src$ cat game_log.txt 
+[Error]: Invalid save.json: [JSON validation error] type must be a number[Warning]: Starting new game insteadxxop@xxop-linux:/mnt/shared/ooplab4/src$ cat gamcat save.json 
+{
+    "actionMode": 0,
+    "aimPos": {
+        "x": 0,
+        "y": 0
+    },
+    "currentSpellIndex": -1,
+    "enemies": [
+        {
+            "damage": 3,
+            "health": 10,
+            "x": 13,
+            "y": 16
+        },
+        {
+            "damage": 3,
+            "health": 10,
+            "x": 24,
+            "y": 3
+        }
+    ],
+    "field": {
+        "cells": [
+            [
+                ** КОРРЕКТНЫЕ ДАННЫЕ ВИДА: **
+                {
+                    "walkable": true,
+                    "x": 29,
+                    "y": 19
+                }
+            ]
+        ],
+        "height": 20,
+        "towers": [
+            {
+                "damage": 2,
+                "range": 4,
+                "skip": 3,
+                "x": 26,
+                "y": 2
+            },
+            {
+                "damage": 4,
+                "range": 4,
+                "skip": 3,
+                "x": 6,
+                "y": 0
+            }
+        ],
+        "traps": [],
+        "width": 30
+    },
+    "levelIndex": 1,
+    "move": 11,
+    "player": {
+        "damage": 5,
+        "hand": {
+            "size": 5,
+            "spells": [
+                {
+                    "damage": 10,
+                    "distance": 4,
+                    "type": "Damage"
+                },
+                {
+                    "damage": 5,
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "type": "Trap"
+                }
+            ]
+        },
+        "health": 30,
+        "maxHealth": 30,
+        "mode": 1,
+        "x": 3,
+        "y": 10
+    },
+    "running": true,
+    "turn": 1
+}xxop@xxop-linux:/mnt/shared/ooplab4/src$ 

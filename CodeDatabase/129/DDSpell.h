@@ -1,0 +1,26 @@
+#pragma once
+#include <vector>
+#include <string>
+#include "../utils/Values.h"
+#include "Spell.h"
+#include "../../command_manager/Control.h"
+
+class DDSpell : public Spell{
+private:
+    std::string type;
+    int damage;
+    int range;
+public:
+    DDSpell();
+
+    std::vector<Point> get_dests(Point player_coords, char c);
+    int get_damage();
+    int get_range();
+    std::string get_type();
+    bool need_to_return();
+    bool draw();
+
+    void set_damage(int dmg);
+
+    ~DDSpell();
+};

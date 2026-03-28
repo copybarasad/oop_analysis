@@ -1,0 +1,9 @@
+#pragma once
+#include "spell.hpp"
+
+class Summon : public Spell {
+public:
+    bool UseSpell(Game& game, const SpellParams& params) override;   
+    std::string getName() const noexcept override; 
+    SpellType getType() const noexcept { return SpellType::kSummon; }
+};

@@ -1,0 +1,8 @@
+#pragma once
+
+enum class CommandType {
+    MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT,
+    CHANGE_ATTACK, SHOW_CARDS, USE_CARD,
+    HELP, END_GAME, SAVE, LOAD, KEYBIND_SETUP,
+    UNKNOWN
+};

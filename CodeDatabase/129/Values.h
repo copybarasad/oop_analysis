@@ -1,0 +1,69 @@
+#pragma once
+
+enum PLAYER{
+P_LIFES = 5,
+CLOSE_COMBAT_DAMAGE = 4,
+RANGE_COMBAT_DAMAGE = 2
+};
+
+enum ENEMY{
+E_X = 2,
+E_Y = 3,
+E_DAMAGE = 1,
+E_LIFES = 2
+};
+
+enum ENEMY_TOWER{
+ET_REGENERATE_MOVES = 10,
+ET_DAMAGE = 1
+};
+
+enum AREA_SPELL{
+AR_DAMAGE = 4,
+AR_RANGE = 2
+};
+
+enum DD_SPELL{
+DD_DAMAGE = 4,
+DD_RANGE = 4
+};
+
+enum TRAP_SPELL{
+TR_DAMAGE = 4,
+TR_RANGE = 0
+};
+
+enum MANAGER{
+PLAYER_COORDS_X = 0,
+PLAYER_COORDS_Y = 0,
+ADD_ENEMY = 11,
+ADD_SPELL = 20,
+CLOSE_DIRECT = 1,
+RANGE_DIRECT = 2
+};
+
+enum CONDITION{
+WHAT_1 = 'c',
+WHAT_2 = 'r',
+WHAT_31 = 'd',
+WHAT_32 = 'a',
+WHAT_33 = 't',
+HOW_1 = 5,
+HOW_2 = 5,
+HOW_3 = 10
+};
+
+enum GAME{
+FIRST_LEVEL = 1,
+END_LEVEL = 4,
+START_HEIGHT = 15,
+START_WIDTH = 15,
+HAND_SIZE = 6,
+FIELD_CHANGE = 5
+};
+
+enum MY_WINDOW{
+HEIGHT = 25,
+WIDTH = 25
+};
+

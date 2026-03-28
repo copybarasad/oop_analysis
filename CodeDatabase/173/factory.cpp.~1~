@@ -1,0 +1,30 @@
+#include <random>
+
+#include "factory.hpp"
+
+WeaponFactory::WeaponFactory() { m_Level = 1; }
+void WeaponFactory::incrementLevel() { m_Level++; }
+
+Weapon WeaponFactory::createMelee() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, m_Level);
+
+    int baseDamage = m_Level * 2;
+    int randomIncrement = dis(gen);
+    int totalDamage = baseDamage + randomIncrement;
+
+    return {WeaponType::Melee, totalDamage};
+}
+
+Weapon WeaponFactory::createRanged() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, m_Level / 2);
+
+    int baseDamage = m_Level;
+    int randomIncrement = dis(gen);
+    int totalDamage = baseDamage + randomIncrement;
+
+    return {WeaponType::Ranged, totalDamage};
+}
