@@ -39,12 +39,7 @@ def convert_to_grakel(G):
     return Graph(edges, node_labels=labels)
 
 def wl_similarity_matrix(graphs, h=3):
-    """
-    graphs: список networkx.Graph
-    h: число итераций WL
-    """
-
-    # задаем WL kernel + базовый kernel (Vertex Histogram)
+    # задаем wl kernel + базовый kernel
     gk = GraphKernel(kernel=[{"name": "weisfeiler_lehman", "n_iter": h},
                              {"name": "vertex_histogram"}],
                      normalize=True)
@@ -55,6 +50,7 @@ def wl_similarity_matrix(graphs, h=3):
     return k
 
 def prepare_grakel_graphs(graphs_dict):
+    # преобразуем все графы networkx в grakel (проверяем на корректность перед этим)
     names = []
     gk_graphs = []
 
