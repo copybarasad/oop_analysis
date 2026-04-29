@@ -1,6 +1,6 @@
 import re
 import networkx as nx
-import matplotlib.pyplot as plt
+
 
 def extract_dependencies(project_files):
     edges = []
@@ -21,9 +21,8 @@ def extract_dependencies(project_files):
     return edges
 
 
-def build_dependency_graph(project_files):
-
-    G = nx.DiGraph() # возможно стоит поменять на MultiDiGraph
+def build_dependency_graph(project_files, project_name=None):
+    G = nx.DiGraph()
     for class_name in project_files.keys():
         short_class_name = class_name.split(".")[0]
         G.add_node(short_class_name)
@@ -32,6 +31,25 @@ def build_dependency_graph(project_files):
         if src in G and dest in G:  # только если оба класса присутствуют
             G.add_edge(src, dest)
 
+    # расстановка labels
+    main = None
+    for node in G.nodes():
+        if node == "main":
+            main = node
+            break
+    if main is None:
+        print(f'в проекте {project_name} main не найден')
+        return
+
+    dist = nx.single_source_shortest_path_length(G, main)
+
+    # назначение структурных меток
+    for node in G.nodes():
+        if node == main:
+            G.nodes[node]["label"] = "entry"
+        else:
+            d = dist.get(node, -1)  # -1 если недостижим
+            G.nodes[node]["label"] = f"dist{d}" # учитывает расстояние от main
     return G
 
 
